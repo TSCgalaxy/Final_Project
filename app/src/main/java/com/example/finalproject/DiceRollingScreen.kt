@@ -9,6 +9,7 @@ import dev.chauvin.dicetray.core.dice.createDie
 fun DiceRollingScreen(
 
 ){
+    // These may be better as an array!!
     val d4 = Die.d4() // This creates a four-sided die with face values ranging from 1 to 4
     val d6 = Die.d6() // This creates a six-sided die with face values ranging from 1 to 6
     val d8 = Die.d8() // This creates an eight-sided die with face values ranging from 1 to 8
