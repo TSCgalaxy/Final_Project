@@ -1,7 +1,11 @@
 package com.example.finalproject
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,6 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 
 enum class DnDScreen(@StringRes val title: Int) {
     HomeScreen(title = R.string.main_screen),
@@ -24,15 +32,26 @@ enum class DnDScreen(@StringRes val title: Int) {
 @Composable
 fun DndAppBar(
     currentScreen: DnDScreen,
+    //navController:NavHostController = navController,
     modifier: Modifier = Modifier
 ){
     BottomAppBar(
         modifier = modifier,
         content = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = "",
-                    ContentDescription = stringResource(R.string.Character_adding)
+            Spacer(modifier = modifier.padding(horizontal = 32.dp))
+            IconButton(onClick = { //navController.navigate(DnDScreen.CharacterScreen.name)
+                }) {
+                Image(
+                    painter = painterResource(R.drawable.addcharacter),
+                    contentDescription = null
+                )
+            }
+            Spacer(modifier = modifier.padding(horizontal = 80.dp))
+            IconButton(onClick = { //navController.navigate(DnDScreen.DiceRoller.name)
+            }) {
+                Image(
+                    painter = painterResource(R.drawable.dice),
+                    contentDescription = null
                 )
             }
         }
@@ -60,9 +79,20 @@ fun DndApp(
         bottomBar = {
             DndAppBar(
                 currentScreen = currentScreen,
+                //navController = navController
             )
         }
-    ) {
+    ) {innerPadding ->
+
+        NavHost(
+            navController = navController,
+            startDestination = DnDScreen.HomeScreen.name,
+            modifier = modifier.padding(innerPadding)
+        ) {
+            composable(route = DnDScreen.HomeScreen.name) {
+
+            }
+        }
 
     }
 }
