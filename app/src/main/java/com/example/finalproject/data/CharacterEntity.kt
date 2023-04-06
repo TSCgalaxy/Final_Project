@@ -43,6 +43,4 @@ class CharacterEntity (
     // Charisma
     @ColumnInfo(name = "attChr")
     val attChr: Int,
-
-
 )
