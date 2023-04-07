@@ -90,7 +90,7 @@ fun DndApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = DnDScreen.HomeScreen.name) {
-
+                mainCharacterListScreen(onCharacterButtonClicked = {})
             }
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(
