@@ -32,7 +32,7 @@ enum class DnDScreen(@StringRes val title: Int) {
 @Composable
 fun DndAppBar(
     currentScreen: DnDScreen,
-    //navController:NavHostController = navController,
+    navController:NavHostController,
     modifier: Modifier = Modifier
 ){
     BottomAppBar(
@@ -47,7 +47,7 @@ fun DndAppBar(
                 )
             }
             Spacer(modifier = modifier.padding(horizontal = 80.dp))
-            IconButton(onClick = { //navController.navigate(DnDScreen.DiceRoller.name)
+            IconButton(onClick = { navController.navigate(DnDScreen.DiceRoller.name)
             }) {
                 Image(
                     painter = painterResource(R.drawable.dice),
@@ -79,7 +79,7 @@ fun DndApp(
         bottomBar = {
             DndAppBar(
                 currentScreen = currentScreen,
-                //navController = navController
+                navController = navController
             )
         }
     ) {innerPadding ->
@@ -91,6 +91,11 @@ fun DndApp(
         ) {
             composable(route = DnDScreen.HomeScreen.name) {
 
+            }
+            composable(route = DnDScreen.DiceRoller.name) {
+                DiceRollingScreen(
+
+                )
             }
         }
 
