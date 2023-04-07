@@ -6,7 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [(CharacterEntity::class)], version = 1, exportSchema = false)
+/**
+ * This database describes a Dungeons and Dragons character.
+ * The character has various attributes and possesses an inventory of items.
+ */
+@Database(entities = [(CharacterEntity::class), (ItemEntity::class)], version = 1, exportSchema = false)
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
     abstract fun characterDAO(): CharacterDao
@@ -21,7 +25,7 @@ abstract class CharacterDB: RoomDatabase() {
                 instance = Room.databaseBuilder(
                     context = context,
                     klass = CharacterDB::class.java,
-                    name = "sandwich_db"
+                    name = "character_db"
                 ).fallbackToDestructiveMigration().build()
             }
             //Return the DB instance
