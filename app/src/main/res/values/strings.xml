@@ -8,4 +8,10 @@
     <string name="name_3">Annie</string>
     <string name="name_4">Alex</string>
     <string name="name_5">Rose</string>
+    <string name="label_name">Name</string>
+    <string name="placeholder_enter_name">Enter your adventurer\'s name</string>
+    <string name="placeholder_select_class">Select your class</string>
+    <string name="label_class">Class</string>
+    <string name="placeholder_select_race">Select your character\'s race</string>
+    <string name="label_race">Race</string>
 </resources>
