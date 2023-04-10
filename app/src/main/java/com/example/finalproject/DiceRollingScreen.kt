@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import dev.chauvin.dicetray.core.dice.Die
@@ -20,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.chauvin.dicetray.dsl.roll
 import java.util.Collections.list
 
 @Composable
@@ -44,6 +48,11 @@ fun DiceRollingScreen(
         Pair(d20,false)
         )
 
+    val diceToRoll = listOf(
+        d4,
+        d6,
+        d8
+    )
     val diceImages = listOf<Int>(
         R.drawable.dice_1,
         R.drawable.dice_2,
@@ -52,32 +61,32 @@ fun DiceRollingScreen(
         R.drawable.dice_5,
         R.drawable.dice_6
     )
+
+    //Scrollable list to display all the dice available to choose from.
+    LazyRow( modifier = modifier
+    ){
+        items(diceImages) {Int->
+            DiceCard(Int)
+
+        }
+    }
+
+    //Column to add the dice being rolled to
     Column(
         modifier = modifier
 
     ) {
 
-        var sixResult by remember{ mutableStateOf(1) }
-        val imageResource = when(sixResult) {
-            1 -> R.drawable.dice_1
-            2 -> R.drawable.dice_2
-            3 -> R.drawable.dice_3
-            4 -> R.drawable.dice_4
-            5 -> R.drawable.dice_5
-            else -> R.drawable.dice_6
-        }
-        LazyRow( modifier = modifier
-        ){
-            items(diceImages) {Int->
-                DiceCard(Int)
+        var sixResult by remember{ mutableStateOf(d4.roll(1)) }
 
-            }
-        }
 
-        sixResult = (1..6).random()
+
+        sixResult = d4.roll()
     }
 
-
+    Button(onClick = { }) {
+        Text(stringResource(R.string.roll))
+    }
 }
 
 /**
@@ -86,13 +95,16 @@ fun DiceRollingScreen(
  */
 @Composable
 fun DiceCard(diceImage:Int, modifier:Modifier = Modifier){
-    Image(
-        painter = painterResource(diceImage),
-        contentDescription = "Dice",
-        modifier = Modifier.
-                height(160.dp),
-        contentScale = ContentScale.Crop
-    )
+    IconButton(onClick = { }) {
+        Image(
+            painter = painterResource(diceImage),
+            contentDescription = "Dice",
+            modifier = Modifier.
+            height(160.dp),
+            contentScale = ContentScale.Crop,
+            )
+    }
+
 }
 
 /**
