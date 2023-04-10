@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class CharacterViewModel(repository:KotlinRepositoryInterface): ViewModel() {
     companion object {
@@ -11,9 +13,6 @@ class CharacterViewModel(repository:KotlinRepositoryInterface): ViewModel() {
     }
     // Data class to store info like in other view models
     val conversionUIModel: StateFlow<CharactersList> = repository.getAllCharacters()
-        // it is a Flow List of values from database,
-        // needs to be a StateFlow of TemperatureHistoryUiState
-        // convert to a Flow of TemperatureHistoryUiState with map
         .map {
             CharactersList(it)
             // convert Flow to StateFlow
