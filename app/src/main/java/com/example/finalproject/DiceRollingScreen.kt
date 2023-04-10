@@ -1,6 +1,5 @@
 package com.example.finalproject
 
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -12,64 +11,47 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import dev.chauvin.dicetray.core.dice.Die
-import dev.chauvin.dicetray.core.dice.Face
-import dev.chauvin.dicetray.core.dice.createDie
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chauvin.dicetray.dsl.roll
-import java.util.Collections.list
+import com.example.finalproject.data.DiceObject
+import com.example.finalproject.data.DiceUiState
 
 @Composable
 fun DiceRollingScreen(
     modifier: Modifier = Modifier,
-
+    diceUiState: DiceUiState,
+    onDiceChanged: (DiceObject, Boolean) -> Unit = { dice: DiceObject, ask: Boolean -> Unit}
 ){
     // These may be better as an array!!
-    val d4 = Die.d4() // This creates a four-sided die with face values ranging from 1 to 4
-    val d6 = Die.d6() // This creates a six-sided die with face values ranging from 1 to 6
-    val d8 = Die.d8() // This creates an eight-sided die with face values ranging from 1 to 8
-    val d10 = Die.d10() // This creates a ten-sided die with face values ranging from 1 to 10
-    val d12 = Die.d12() // This creates a twelve-sided die with face values ranging from 1 to 12
-    val d20 = Die.d20() // This creates a twenty-sided die with face values ranging from 1 to 20
+    val d4:DiceObject = DiceObject(Die.d4(),-1) // This creates a four-sided die with face values ranging from 1 to 4
+    val d6:DiceObject = DiceObject(Die.d6(),-1) // This creates a six-sided die with face values ranging from 1 to 6
+    val d8:DiceObject = DiceObject(Die.d8(),-1) // This creates an eight-sided die with face values ranging from 1 to 8
+    val d10:DiceObject = DiceObject(Die.d10(),-1) // This creates a ten-sided die with face values ranging from 1 to 10
+    val d12:DiceObject = DiceObject(Die.d12(), -1) // This creates a twelve-sided die with face values ranging from 1 to 12
+    val d20:DiceObject = DiceObject(Die.d20(),-1) // This creates a twenty-sided die with face values ranging from 1 to 20
 
     val dice = listOf (
-        Pair(d4,false),
-        Pair(d6,false),
-        Pair(d8, false),
-        Pair(d10, false),
-        Pair(d12,false),
-        Pair(d20,false)
-        )
-
-    val diceToRoll = listOf(
         d4,
         d6,
-        d8
-    )
-    val diceImages = listOf<Int>(
-        R.drawable.dice_1,
-        R.drawable.dice_2,
-        R.drawable.dice_3,
-        R.drawable.dice_4,
-        R.drawable.dice_5,
-        R.drawable.dice_6
-    )
+        d8,
+        d10,
+        d12,
+        d20
+        )
 
-    //Scrollable list to display all the dice available to choose from.
-    LazyRow( modifier = modifier
-    ){
-        items(diceImages) {Int->
-            DiceCard(Int)
+    val rollers: MutableList<DiceObject> = mutableListOf()
 
-        }
+    for (roll in diceUiState.diceToRoll) {
+        rollers.add(roll)
     }
+
 
     //Column to add the dice being rolled to
     Column(
@@ -77,16 +59,33 @@ fun DiceRollingScreen(
 
     ) {
 
-        var sixResult by remember{ mutableStateOf(d4.roll(1)) }
+        //Scrollable list to display all the dice available to choose from.
+        LazyRow( modifier = modifier
+        ){
+            items(dice) { it ->
+                DiceCard(it, modifier, onDiceChanged )
+            }
+        }
 
+        //display dice below row
+        rollers.forEach {item ->
+            IconButton(onClick = {onDiceChanged(item, false)} ) {
+                Image(
+                    painter = painterResource(item.getImage()),
+                    contentDescription = "Dice",
+                    modifier = Modifier.
+                    height(160.dp),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+        }
 
+        Button(onClick = { }, modifier.align(alignment = Alignment.CenterHorizontally) ) {
+            Text(stringResource(R.string.roll))
+        }
 
-        sixResult = d4.roll()
     }
 
-    Button(onClick = { }) {
-        Text(stringResource(R.string.roll))
-    }
 }
 
 /**
@@ -94,10 +93,12 @@ fun DiceRollingScreen(
  * @param Die<Int> dice is the current object to display an image at the top bar.
  */
 @Composable
-fun DiceCard(diceImage:Int, modifier:Modifier = Modifier){
-    IconButton(onClick = { }) {
+fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
+                onDiceChanged: (DiceObject, Boolean) -> Unit = { dice:DiceObject, select: Boolean -> Unit}){
+
+    IconButton(onClick = {onDiceChanged(obj, true)}) {
         Image(
-            painter = painterResource(diceImage),
+            painter = painterResource(obj.getImage()),
             contentDescription = "Dice",
             modifier = Modifier.
             height(160.dp),
@@ -107,11 +108,3 @@ fun DiceCard(diceImage:Int, modifier:Modifier = Modifier){
 
 }
 
-/**
- * Preview function to see how the dice appear within the top bar
- */
-@Preview
-@Composable
-private fun DiceCardPreview() {
-   DiceCard(R.drawable.dice_1)
-}
