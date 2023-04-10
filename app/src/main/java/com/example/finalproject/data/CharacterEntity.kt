@@ -18,6 +18,9 @@ class CharacterEntity (
     @ColumnInfo(name = "level")
     val level: Int,
 
+    @ColumnInfo(name = "XP")
+    val XP: Int,
+
     @ColumnInfo(name = "maxHP")
     val maxHP: Int,
 
@@ -43,4 +46,14 @@ class CharacterEntity (
     // Charisma
     @ColumnInfo(name = "attChr")
     val attChr: Int,
+
+    // constitution
+    @ColumnInfo(name = "attCon")
+    val attCon: Int,
+
+    @ColumnInfo(name = "race")
+    val race: String,
+
+    @ColumnInfo(name = "charClass")
+    val charClass: String,
 )
