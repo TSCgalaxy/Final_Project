@@ -1,16 +1,23 @@
 package com.example.finalproject.data
 
+import android.util.Log
 import com.example.finalproject.R
 import dev.chauvin.dicetray.core.dice.Die
 
 
 data class DiceObject(
     val dice: Die<Int>,
-    val Lastroll:Int
+    var Lastroll:Int,
+    var currentImage: Int
 ){
     fun roll(){
+        var result = dice.roll(1)
 
+        Lastroll = result[0].value
 
+        currentImage = getImage()
+        Log.d("Help Me",Lastroll.toString())
+        Log.d("Help Me",currentImage.toString())
     }
     fun getImage(): Int{
         val imageResource : Int = when(dice.faces.size) {

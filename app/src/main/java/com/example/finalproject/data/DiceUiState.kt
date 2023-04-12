@@ -3,6 +3,6 @@ package com.example.finalproject.data
 import dev.chauvin.dicetray.core.dice.Die
 
 data class DiceUiState(
-    var diceToRoll: List<DiceObject> = listOf()
-
+    var diceToRoll: List<DiceObject> = listOf(),
+    var counter: Int = 0
 )

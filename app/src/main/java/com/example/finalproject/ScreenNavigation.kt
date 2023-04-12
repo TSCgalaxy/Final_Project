@@ -94,7 +94,8 @@ fun DndApp(
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(
                     onDiceChanged = { dice: DiceObject, ask: Boolean -> viewModel.updateDiceToRoll(dice, ask) },
-                    diceUiState =  uiState
+                    onRollDice = { viewModel.rollAllDice()},
+                    diceViewModel = viewModel
                 )
             }
         }

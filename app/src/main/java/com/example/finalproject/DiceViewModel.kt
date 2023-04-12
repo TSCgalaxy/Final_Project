@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-
 class DiceViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(DiceUiState())
     val uiState: StateFlow<DiceUiState> = _uiState.asStateFlow()
@@ -35,6 +34,24 @@ class DiceViewModel: ViewModel() {
                 )
 
         }
+
+    }
+
+    fun rollAllDice()
+    {
+
+        var counter = _uiState.value.counter
+        _uiState.value.diceToRoll.forEach {item ->
+             item.roll()
+        }
+       // tempList.add(DiceObject(Die.d6(), 5, R.drawable.dice_1))
+        _uiState.update  {currentState ->
+            currentState.copy(
+                counter = counter + 1
+            )
+
+        }
+
 
     }
 }
