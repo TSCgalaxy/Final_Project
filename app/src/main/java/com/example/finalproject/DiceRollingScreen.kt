@@ -38,7 +38,7 @@ fun DiceRollingScreen(
     val d8:DiceObject = DiceObject(Die.d8(),-1, R.drawable.dice_1) // This creates an eight-sided die with face values ranging from 1 to 8
     val d10:DiceObject = DiceObject(Die.d10(),-1, R.drawable.dice_1) // This creates a ten-sided die with face values ranging from 1 to 10
     val d12:DiceObject = DiceObject(Die.d12(), -1, R.drawable.dice_1) // This creates a twelve-sided die with face values ranging from 1 to 12
-    val d20:DiceObject = DiceObject(Die.d20(),-1, R.drawable.dice_1) // This creates a twenty-sided die with face values ranging from 1 to 20
+    val d20:DiceObject = DiceObject(Die.d20(),-1, R.drawable.d20_0) // This creates a twenty-sided die with face values ranging from 1 to 20
 
     val dice = listOf (
         d4,
