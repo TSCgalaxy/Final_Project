@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.Flow
 interface CharacterDao {
     // Insert a character into the database
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addCharacter(char: CharacterEntity)
+    suspend fun addCharacter(player: CharacterEntity)
 
     //Return a list of all Characters in the DB
-    @Query("SELECT * FROM character")
+    @Query("SELECT * FROM tableplayer")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
 
     // Item access queries here

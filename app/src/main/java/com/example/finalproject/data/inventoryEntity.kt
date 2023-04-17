@@ -2,11 +2,12 @@ package com.example.finalproject.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 
-@Entity(tableName = "inventory")
+@Entity(tableName = "inventory",
+        primaryKeys = ["characterID", "itemID"])
 class InventoryEntity(
-    @PrimaryKey()
-    val characterID: Int = 0,
-    @PrimaryKey()
-    val itemID: Int = 0
+        val characterID: Int = 0,
+        val itemID: Int = 0
 )
+
