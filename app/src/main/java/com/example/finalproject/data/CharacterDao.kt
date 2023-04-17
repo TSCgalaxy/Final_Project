@@ -15,6 +15,11 @@ interface CharacterDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addCharacter(player: CharacterEntity)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addItem(itemEntity: ItemEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addtoInventory(player: CharacterEntity, itemEntity: ItemEntity)
     //Return a list of all Characters in the DB
     @Query("SELECT * FROM tableplayer")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
