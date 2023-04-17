@@ -37,14 +37,24 @@ fun DndAppBar(
         modifier = modifier,
         content = {
             Spacer(modifier = modifier.padding(horizontal = 32.dp))
-            IconButton(onClick = { //navController.navigate(DnDScreen.CharacterScreen.name)
+            IconButton(onClick = { navController.navigate(DnDScreen.CharacterScreen.name)
                 }) {
                 Image(
                     painter = painterResource(R.drawable.addcharacter),
                     contentDescription = null
                 )
             }
-            Spacer(modifier = modifier.padding(horizontal = 80.dp))
+            Spacer(modifier = modifier.padding(horizontal = 40.dp))
+            if(currentScreen == DnDScreen.CharacterScreen || currentScreen == DnDScreen.DiceRoller)
+            {
+                IconButton(onClick = { navController.navigate(DnDScreen.HomeScreen.name) }) {
+                    Image(
+                        painter = painterResource(R.drawable.d20_0),
+                        contentDescription = null
+                    )
+                }
+            }
+            Spacer(modifier = modifier.padding(horizontal = 40.dp))
             IconButton(onClick = { navController.navigate(DnDScreen.DiceRoller.name)
             }) {
                 Image(
@@ -90,6 +100,9 @@ fun DndApp(
         ) {
             composable(route = DnDScreen.HomeScreen.name) {
                 mainCharacterListScreen(onCharacterButtonClicked = {})
+            }
+            composable(route = DnDScreen.CharacterScreen.name) {
+                CharacterScreen(title = "Create a Character")
             }
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(

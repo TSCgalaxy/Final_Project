@@ -1,12 +1,11 @@
 package com.example.finalproject
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
@@ -21,7 +20,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.finalproject.data.DiceObject
 import com.example.finalproject.data.DiceUiState
 
@@ -32,13 +33,15 @@ fun DiceRollingScreen(
     onDiceChanged: (DiceObject, Boolean) -> Unit = { dice: DiceObject, ask: Boolean -> Unit},
     onRollDice: () -> Unit = { -> Unit}
 ){
+    val context = LocalContext.current
+
     // These may be better as an array!!
     val d4:DiceObject = DiceObject(Die.d4(),-1, R.drawable.dice_1) // This creates a four-sided die with face values ranging from 1 to 4
-    val d6:DiceObject = DiceObject(Die.d6(),-1, R.drawable.dice_1) // This creates a six-sided die with face values ranging from 1 to 6
-    val d8:DiceObject = DiceObject(Die.d8(),-1, R.drawable.dice_1) // This creates an eight-sided die with face values ranging from 1 to 8
+    val d6:DiceObject = DiceObject(Die.d6(),-1, R.drawable.d6_0) // This creates a six-sided die with face values ranging from 1 to 6
+    val d8:DiceObject = DiceObject(Die.d8(),-1, R.drawable.d8_1) // This creates an eight-sided die with face values ranging from 1 to 8
     val d10:DiceObject = DiceObject(Die.d10(),-1, R.drawable.dice_1) // This creates a ten-sided die with face values ranging from 1 to 10
     val d12:DiceObject = DiceObject(Die.d12(), -1, R.drawable.dice_1) // This creates a twelve-sided die with face values ranging from 1 to 12
-    val d20:DiceObject = DiceObject(Die.d20(),-1, R.drawable.dice_1) // This creates a twenty-sided die with face values ranging from 1 to 20
+    val d20:DiceObject = DiceObject(Die.d20(),-1, R.drawable.d20_0) // This creates a twenty-sided die with face values ranging from 1 to 20
 
     val dice = listOf (
         d4,
@@ -55,9 +58,7 @@ fun DiceRollingScreen(
 
     var rollers = uiState.diceToRoll
     var counter by remember { mutableStateOf(0) }
-   // for (roll in diceUiState.diceToRoll) {
-    //    rollers.add(roll)
-   // }
+
 
 
     //Column to add the dice being rolled to
@@ -66,7 +67,6 @@ fun DiceRollingScreen(
             MaterialTheme.colors.background)
 
     ) {
-
         //Scrollable list to display all the dice available to choose from.
         LazyRow( modifier = modifier
         ){
@@ -75,7 +75,23 @@ fun DiceRollingScreen(
             }
         }
         Divider(thickness = 5.dp, modifier = modifier.padding(bottom = 16.dp))
-        Button(onClick = {onRollDice(); counter += 1},
+        Button(onClick = {onRollDice();
+            var text: String = "Results: "
+
+            for (roll in rollers) {
+                if (rollers.size > 1){
+                    text = text + roll.dice.faces.size.toString() + " sided = " + roll.Lastroll.toString() +", "
+                }
+                else
+                    text = text + roll.dice.faces.size.toString() + " sided = " + roll.Lastroll.toString()
+
+            }
+
+            val duration = Toast.LENGTH_LONG
+            val toast = Toast.makeText( context, text, duration)
+            toast.show();
+            counter += 1},
+
             modifier.align(alignment = Alignment.CenterHorizontally))
         {
             Text(stringResource(R.string.roll))
@@ -87,14 +103,39 @@ fun DiceRollingScreen(
         rollers.forEach {item ->
             Log.d("fix yourself",item.getImage().toString())
             val diceImage by remember{ mutableStateOf( item)}
-            IconButton(onClick = {onDiceChanged(item, false)} ) {
+            IconButton(onClick = {onDiceChanged(item, false);counter -= 1} ) {
                 Image(
                     painter = painterResource(diceImage.currentImage),
                     contentDescription = "Dice",
-                    modifier = Modifier.
-                    height(100.dp).width(100.dp),
+                    modifier = Modifier
+                        .height(100.dp)
+                        .width(100.dp),
                     contentScale = ContentScale.Crop,
                 )
+            }
+        }
+        Divider(thickness = 5.dp, modifier = modifier.padding(bottom = 16.dp))
+        Column() {
+            rollers.forEach{
+                item ->
+                Row(modifier = modifier
+                    .fillMaxWidth()) {
+                    Image(
+                        painter = painterResource(item.currentImage),
+                        contentDescription = "Dice",
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(20.dp),
+                        contentScale = ContentScale.Crop,
+                    )
+                    Spacer(modifier = modifier.padding(horizontal = 32.dp))
+                    Text(
+                        text = "Result: " + item.Lastroll.toString(),
+                        style = MaterialTheme.typography.h1,
+                        fontSize = 20.sp
+                    )
+                }
+
             }
         }
 
@@ -115,16 +156,11 @@ fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
         Image(
             painter = painterResource(obj.getImage()),
             contentDescription = "Dice",
-            modifier = Modifier.
-            height(80.dp)
-            .width(80.dp),
+            modifier = Modifier
+                .height(80.dp)
+                .width(80.dp),
             contentScale = ContentScale.Crop,
             )
     }
 
-}
-@Composable
-fun updateFaces(dice: DiceObject): Int
-{
-    return dice.getImage()
 }
