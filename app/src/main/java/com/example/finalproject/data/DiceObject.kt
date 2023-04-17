@@ -44,12 +44,31 @@ data class DiceObject(
     }
 
     fun image6dice(roll:Int): Int {
+        val imageDisplay:Int = when (roll) {
+            1 ->  R.drawable.d6_1
+            2 ->  R.drawable.d6_2
+            3 ->  R.drawable.d6_3
+            4 ->  R.drawable.d6_4
+            5 ->  R.drawable.d6_5
+            else -> R.drawable.d6_6
+        }
 
-        return  R.drawable.dice_1
+        return imageDisplay
     }
 
     fun image8dice (roll:Int): Int {
-        return  R.drawable.dice_1
+        val imageDisplay:Int = when (roll) {
+            1 ->  R.drawable.d8_1
+            2 ->  R.drawable.d8_2
+            3 ->  R.drawable.d8_3
+            4 ->  R.drawable.d8_4
+            5 ->  R.drawable.d8_5
+            6 ->  R.drawable.d8_6
+            7 ->  R.drawable.d8_7
+            else -> R.drawable.d8_8
+        }
+
+        return imageDisplay
     }
 
     fun image10dice (roll:Int): Int {
