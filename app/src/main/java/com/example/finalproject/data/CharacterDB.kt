@@ -10,7 +10,8 @@ import androidx.room.TypeConverters
  * This database describes a Dungeons and Dragons character.
  * The character has various attributes and possesses an inventory of items.
  */
-@Database(entities = [(CharacterEntity::class), (ItemEntity::class)], version = 1, exportSchema = false)
+//
+@Database(entities = [CharacterEntity::class, ItemEntity::class, InventoryEntity::class], version = 2, exportSchema = false)
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
     abstract fun characterDAO(): CharacterDao

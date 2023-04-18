@@ -3,6 +3,7 @@
     <string name="main_screen">Home Page</string>
     <string name="character_creator">Character Creation</string>
     <string name="dice_roller">Dice Roller</string>
+    <string name ="roll">Roll</string>
     <string name="name_1">Bob</string>
     <string name="name_2">John</string>
     <string name="name_3">Annie</string>

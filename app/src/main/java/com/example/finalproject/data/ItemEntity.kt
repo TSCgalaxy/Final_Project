@@ -9,12 +9,12 @@ import androidx.room.PrimaryKey
  */
 @Entity (tableName = "item")
 class ItemEntity (
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey (autoGenerate = false)
     val id: Int = 0,
 
     @ColumnInfo(name = "name")
     val name: String,
 
-    @ColumnInfo(name = "level")
-    val level: Int,
+    @ColumnInfo(name = "Modifiers")
+    val level: String,
 )

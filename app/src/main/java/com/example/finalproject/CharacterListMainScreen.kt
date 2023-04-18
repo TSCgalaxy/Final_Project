@@ -8,16 +8,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.finalproject.data.*
+import kotlinx.coroutines.launch
+import java.util.*
 
 //composable(route = DnDScreen.) {
 //    mainScreen(viewModel = viewModel,
@@ -26,17 +30,28 @@ import androidx.compose.ui.unit.dp
 //    )
 //}
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
     onCharacterButtonClicked: () -> Unit,
+    viewmodel : CharacterViewModel
 ){
+    val NPCs by viewmodel.conversionUIModel.collectAsState()
     Scaffold(
         bottomBar  = {}
     )
     {
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
+            for (x in NPCs.subs) {
+                item {
+
+                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice)
+                    Button(onClick = onCharacterButtonClicked,) {
+                        CharacterItem(info = info)
+                    }
+                }
+            }
             items(characterList) {
                     Button(onClick = onCharacterButtonClicked,) {
                         CharacterItem(info = it)
@@ -88,16 +103,16 @@ fun CharacterInfo(@DrawableRes dogIcon: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CharacterInformation(@StringRes dogName: Int, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
+fun CharacterInformation(dogName: String, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
     Column {
         Text(
-            text = stringResource(dogName),
-            style = MaterialTheme.typography.h3,
+            text = dogName,
+            style = MaterialTheme.typography.h4,
             modifier = modifier.padding(top = 8.dp)
         )
         Text(
             text = "$health / $maxHealth",
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.h5
         )
     }
 }
