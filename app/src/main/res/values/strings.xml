@@ -15,4 +15,23 @@
     <string name="label_class">Class</string>
     <string name="placeholder_select_race">Select your character\'s race</string>
     <string name="label_race">Race</string>
+    <string name="placeholder_char_desc">\"Enter a backstory for your adventurer.\"</string>
+    <string name="label_char_desc">Character Description</string>
+    <string name="attr_strength">Strength</string>
+    <string name="attr_constitution">Constitution</string>
+    <string name="attr_strength_desc">Your hero\'s physical might!</string>
+    <string name="attr_constitution_desc">Your hero\'s resistence to ailments.</string>
+    <string name="attr_dexterity">Dexterity</string>
+    <string name="attr_dexterity_desc">Describes how nimble your hero is.</string>
+    <string name="placeholder_select_level">Your character\'s level</string>
+    <string name="label_level">Level</string>
+    <string name="placeholder_select_xp">Your character\'s XP</string>
+    <string name="label_XP">XP</string>
+    <string name="button_submit">Add Character</string>
+    <string name="attr_intelligence">Intelligence</string>
+    <string name="attr_intelligence_desc">Your Hero\'s smarts</string>
+    <string name="attr_wisdom">Wisdom</string>
+    <string name="attr_wisdom_desc">Your hero\'s reasoning and awareness</string>
+    <string name="attr_charisma">Charisma</string>
+    <string name="attr_charisma_desc">Your hero\'s inherent charm.</string>
 </resources>
