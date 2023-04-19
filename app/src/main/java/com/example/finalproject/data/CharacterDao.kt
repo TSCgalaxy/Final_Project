@@ -24,6 +24,11 @@ interface CharacterDao {
     @Query("SELECT * FROM tableplayer")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
 
+    @Query("SELECT * FROM item")
+    fun getAllItem(): Flow<List<ItemEntity>>
+
+    @Query("SELECT * FROM inventory")
+    fun getAllFromInventory(): Flow<List<InventoryEntity>>
     // Item access queries here
     // ...
 }
