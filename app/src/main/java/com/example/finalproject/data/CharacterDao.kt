@@ -25,10 +25,13 @@ interface CharacterDao {
     //Return a list of all Characters in the DB
     @Query("SELECT * FROM tableplayer")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
+
+    @Query("SELECT * FROM tableplayer WHERE id = :userId LIMIT 1")
+    fun NPCbyID(userId: Int): Flow<CharacterEntity>?
     @Update(onConflict = OnConflictStrategy.IGNORE)
     fun updateNPC(player: CharacterEntity)
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    fun updateInvetory(inventoryEntity: InventoryEntity)
+    fun updateInventory(inventoryEntity: InventoryEntity)
 
     @Query("SELECT * FROM item")
     fun getAllItem(): Flow<List<ItemEntity>>
