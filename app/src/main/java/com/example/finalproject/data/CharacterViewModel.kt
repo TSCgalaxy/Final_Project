@@ -21,7 +21,6 @@ class CharacterViewModel(repository:KotlinRepositoryInterface): ViewModel() {
             started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
             initialValue = CharactersList()
         )
-
 }
 //alone
 data class CharactersList(
