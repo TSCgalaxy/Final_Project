@@ -1,5 +1,7 @@
 package com.example.finalproject
 
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -28,9 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.example.finalproject.data.characterAttributes
-import com.example.finalproject.data.characterClasses
-import com.example.finalproject.data.characterRaces
+import com.example.finalproject.data.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun TextFieldColorOverride(
@@ -44,7 +46,8 @@ fun TextFieldColorOverride(
 @Composable
 fun CharacterDropdown (items: Array<String>,
                        @StringRes placeholder: Int,
-                       @StringRes label: Int) {
+                       @StringRes label: Int,
+                       modifyStateCallback: (Any) -> Unit = {}) {
     var isExpanded by remember { mutableStateOf(false) }
     var currentSelectedText by remember { mutableStateOf("") }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -64,7 +67,7 @@ fun CharacterDropdown (items: Array<String>,
         colors = colors,
         enabled = false,
         value = currentSelectedText,
-        onValueChange = {/* currentSelectedText = it */},
+        onValueChange = {/* currentSelectedText = it */ },
         placeholder = { Text(text = stringResource(id = placeholder)) },
         label = { Text(text = stringResource(id = label), color = Color.Black)
         },
@@ -96,6 +99,7 @@ fun CharacterDropdown (items: Array<String>,
             label ->
             DropdownMenuItem(onClick = {
                 currentSelectedText = label
+                modifyStateCallback(label)
                 isExpanded = false }
             ) {
                 //label
@@ -112,7 +116,8 @@ fun CharacterTextField(
     @StringRes label: Int,
     modifier: Modifier = Modifier,
     isAttr: Boolean = false,
-    attrConstraint: Int = 20) {
+    attrConstraint: Int = 20,
+    modifyStateCallback: (Any) -> Unit = {}) {
 
     //Save the state of the text box's contents.
     var text by remember {mutableStateOf("")}
@@ -135,12 +140,15 @@ fun CharacterTextField(
             if (isAttr) {
                 if (it.isEmpty()) {
                     text = ""
+                    modifyStateCallback(0)
                 }
                 else if (it.matches(Regex("^\\d*\$")) && it.toInt() <= attrConstraint) {
                     text = it
+                    modifyStateCallback(it.toInt())
                 }
             } else {
                 text = it
+                modifyStateCallback(it)
             }},
         placeholder = { Text(textAlign = TextAlign.Center, text = stringResource(id = placeholder)) },
         label = { Text(text = stringResource(id = label)) },
@@ -154,6 +162,63 @@ fun CharacterTextField(
     )
 }
 
+@Composable
+fun CharacterAttributes(
+    callbackList: List<(Any) -> Unit>
+) {
+    //ATTRIBUTES
+    for (i in 0..5 step 2) {
+        Row(
+            Modifier
+                .fillMaxWidth(1f)
+        ) {
+            CharacterTextField(
+                placeholder = characterAttributes[i].second,
+                label = characterAttributes[i].first,
+                modifier = Modifier
+                    .height(128.dp)
+                    .padding(4.dp)
+                    .fillMaxWidth(.5f),
+                isAttr = true,
+                modifyStateCallback = {callbackList[i].invoke(it as Int)}
+            )
+            CharacterTextField(
+                placeholder = characterAttributes[i + 1].second,
+                label = characterAttributes[i + 1].first,
+                modifier = Modifier
+                    .height(128.dp)
+                    .padding(4.dp),
+                isAttr = true,
+                modifyStateCallback = {callbackList[i + 1].invoke(it as Int)}
+            )
+        }
+    }
+}
+
+
+fun dataCheck(viewmodel: CreateCharViewModel): Boolean {
+    //Name and level
+    if (viewmodel.getName() == "") return false
+    if (viewmodel.getLvl() == 0) return false
+
+    //Race and Class
+    if (viewmodel.getRace() == "") return false
+    if (viewmodel.getClass() == "") return false
+
+    //Attributes
+    if (viewmodel.getStr() == 0) return false
+    if (viewmodel.getCon() == 0) return false
+    if (viewmodel.getDex() == 0) return false
+    if (viewmodel.getWis() == 0) return false
+    if (viewmodel.getInt() == 0) return false
+    if (viewmodel.getChr() == 0) return false
+
+    //Description
+    if (viewmodel.getDesc() == "") return false
+
+    return true
+}
+
 /**
  * Character Creation Screen
  */
@@ -161,12 +226,20 @@ fun CharacterTextField(
 fun CharacterScreen(
     title: String,
     modifier: Modifier = Modifier,
-    onSubmit: () -> Unit = {}) {
+    viewModel: CreateCharViewModel = CreateCharViewModel(LocalContext.current),
+    repo: RepositoryClass
+) {
 
+    //Coroutine scope
+    val coroutineScope = rememberCoroutineScope()
+
+    //Toast Message
+    var toast = Toast.makeText(LocalContext.current, "Data is missing.",
+        Toast.LENGTH_SHORT)
+
+    //Main Body
     LazyColumn() {
-
     item {
-
         Column(
             modifier = modifier
                 .padding(4.dp)
@@ -181,85 +254,70 @@ fun CharacterScreen(
             //Name
             CharacterTextField(
                 placeholder = R.string.placeholder_enter_name,
-                label = R.string.label_name
+                label = R.string.label_name,
+                modifyStateCallback = { viewModel.setName(it as String)}
             )
 
-            //Race and Class
-            Column(Modifier.padding(8.dp)) {
-                CharacterDropdown(
-                    items = characterClasses,
-                    placeholder = R.string.placeholder_select_class,
-                    label = R.string.label_class
-                )
-
-                //Spacer
-                Spacer(Modifier.padding(4.dp))
-
-                CharacterDropdown(
-                    items = characterRaces,
-                    placeholder = R.string.placeholder_select_race,
-                    label = R.string.label_race
-                )
-            }
+            //Class and race
+            CharacterRaceClass(
+                setClass = {viewModel.setClass(it)},
+                setRace = {viewModel.setRace(it)})
 
             //Level and XP
-            Row(Modifier.fillMaxWidth(1f)) {
-                CharacterTextField(
-                    placeholder = R.string.placeholder_select_level,
-                    label = R.string.label_level,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(.5f),
-                    isAttr = true,
-                    attrConstraint = 20
-                )
-                CharacterTextField(
-                    placeholder = R.string.placeholder_select_xp,
-                    label = R.string.label_XP,
-                    modifier = Modifier.padding(8.dp),
-                    isAttr = true,
-                    attrConstraint = 999999
-                )
-            }
+            CharacterLvlXP(
+                setLvl = {viewModel.setLvl(it)},
+                setXP = {viewModel.setXP(it)}
+            )
 
-            //ATTRIBUTES
-            for (i in 0..5 step 2) {
-                Row(
-                    Modifier
-                        .fillMaxWidth(1f)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    CharacterTextField(
-                        placeholder = characterAttributes[i].second,
-                        label = characterAttributes[i].first,
-                        modifier = Modifier
-                            .height(128.dp)
-                            .padding(4.dp)
-                            .fillMaxWidth(.5f),
-                        isAttr = true
-                    )
-                    CharacterTextField(
-                        placeholder = characterAttributes[i + 1].second,
-                        label = characterAttributes[i + 1].first,
-                        modifier = Modifier
-                            .height(128.dp)
-                            .padding(4.dp),
-                        isAttr = true
-                    )
-                }
-            }
+            //Attributes
+            CharacterAttributes(
+                listOf({viewModel.setStr(it as Int)},
+                    {viewModel.setCon(it as Int)},
+                    {viewModel.setDex(it as Int)},
+                    {viewModel.setInt(it as Int)},
+                    {viewModel.setWis(it as Int)},
+                    {viewModel.setChr(it as Int)})
+            )
 
-            //DESCRIPTION
+            //Description
             CharacterTextField(
                 placeholder = R.string.placeholder_char_desc,
                 label = R.string.label_char_desc,
                 modifier = Modifier
                     .fillMaxWidth(.8f)
-                    .height(128.dp)
+                    .height(128.dp),
+                modifyStateCallback = {viewModel.setDesc(it as String)}
                 )
 
             //Submit button
-            Button(onClick = {}) {
+            Button(onClick = {
+                if (dataCheck(viewModel)) {
+                    //Send to database
+
+                    coroutineScope.launch {
+                        repo.insertCharacter(
+                            CharacterEntity(
+                                id = 0,
+                                name = viewModel.getName(),
+                                level = viewModel.getLvl(),
+                                XP = viewModel.getXP(),
+                                maxHP = 10, //TODO
+                                currentHP = 10, //TODO
+                                attStr = viewModel.getStr(),
+                                attDex = viewModel.getDex(),
+                                attCon = viewModel.getCon(),
+                                attWis = viewModel.getWis(),
+                                attChr = viewModel.getChr(),
+                                attInt = viewModel.getInt(),
+                                race = viewModel.getRace(),
+                                charClass = viewModel.getClass(),
+                            )
+                        )
+                    }
+                } else {
+                    //Send a Toast Message telling the user to enter more info.
+                    toast.show()
+                }}) {
                 Text(text = stringResource(id = R.string.button_submit))
             }
 
@@ -268,8 +326,60 @@ fun CharacterScreen(
     }
 }
 
+
+
+@Composable
+fun CharacterLvlXP(setLvl: (Int) -> Unit,
+                   setXP: (Int) -> Unit) {
+    //Level and XP
+    Row(Modifier.fillMaxWidth(1f)) {
+        CharacterTextField(
+            placeholder = R.string.placeholder_select_level,
+            label = R.string.label_level,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(.5f),
+            isAttr = true,
+            attrConstraint = 20,
+            modifyStateCallback = { setLvl(it as Int) }
+        )
+        CharacterTextField(
+            placeholder = R.string.placeholder_select_xp,
+            label = R.string.label_XP,
+            modifier = Modifier.padding(8.dp),
+            isAttr = true,
+            attrConstraint = 999999,
+            modifyStateCallback = { setXP(it as Int) }
+        )
+    }
+}
+
+@Composable
+fun CharacterRaceClass(setRace: (String) -> Unit,
+                       setClass: (String) -> Unit) {
+    //Race and Class
+    Column(Modifier.padding(8.dp)) {
+        CharacterDropdown(
+            items = characterClasses,
+            placeholder = R.string.placeholder_select_class,
+            label = R.string.label_class,
+            modifyStateCallback = { setClass(it.toString()) }
+        )
+
+        //Spacer
+        Spacer(Modifier.padding(4.dp))
+
+        CharacterDropdown(
+            items = characterRaces,
+            placeholder = R.string.placeholder_select_race,
+            label = R.string.label_race,
+            modifyStateCallback = { setRace(it.toString()) }
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CharacterScreenPreview() {
-    CharacterScreen("Create a Character")
+    //CharacterScreen("Create a Character", )
 }
