@@ -1,8 +1,8 @@
 package com.example.finalproject
 
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,8 +36,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TextFieldColorOverride(
-    textColor: Color = Color.Black,
-    disabledTextColor: Color = Color.Black,
+    textColor: Color = Color.White,
+    disabledTextColor: Color = Color.White,
 ) = TextFieldDefaults.textFieldColors(
     textColor = textColor,
     disabledTextColor = disabledTextColor,
@@ -92,7 +92,7 @@ fun CharacterDropdown (items: Array<String>,
             with(LocalDensity.current) {
                 textFieldSize.width.toDp()
             }
-        )
+        ).background(Color.DarkGray)
     ) {
         // Load in all the items.
         items.forEach {
@@ -201,6 +201,9 @@ fun dataCheck(viewmodel: CreateCharViewModel): Boolean {
     if (viewmodel.getName() == "") return false
     if (viewmodel.getLvl() == 0) return false
 
+    //HP
+    if (viewmodel.getMaxHP() == 0) return false
+
     //Race and Class
     if (viewmodel.getRace() == "") return false
     if (viewmodel.getClass() == "") return false
@@ -227,14 +230,17 @@ fun CharacterScreen(
     title: String,
     modifier: Modifier = Modifier,
     viewModel: CreateCharViewModel = CreateCharViewModel(LocalContext.current),
-    repo: RepositoryClass
+    repo: RepositoryClass,
+    onGoBack: () -> Unit
 ) {
 
     //Coroutine scope
     val coroutineScope = rememberCoroutineScope()
 
     //Toast Message
-    var toast = Toast.makeText(LocalContext.current, "Data is missing.",
+    var dataFailToast = Toast.makeText(LocalContext.current, "Data is missing.",
+        Toast.LENGTH_SHORT)
+    var insertSuccessToast = Toast.makeText(LocalContext.current, "Character Added!",
         Toast.LENGTH_SHORT)
 
     //Main Body
@@ -256,6 +262,15 @@ fun CharacterScreen(
                 placeholder = R.string.placeholder_enter_name,
                 label = R.string.label_name,
                 modifyStateCallback = { viewModel.setName(it as String)}
+            )
+
+            //MaxHP
+            CharacterTextField(
+                placeholder = R.string.placeholder_enter_hp,
+                label = R.string.label_max_hp,
+                modifyStateCallback = { viewModel.setMaxHP(it as Int)},
+                isAttr = true,
+                attrConstraint = 50
             )
 
             //Class and race
@@ -293,7 +308,6 @@ fun CharacterScreen(
             Button(onClick = {
                 if (dataCheck(viewModel)) {
                     //Send to database
-
                     coroutineScope.launch {
                         repo.insertCharacter(
                             CharacterEntity(
@@ -301,8 +315,8 @@ fun CharacterScreen(
                                 name = viewModel.getName(),
                                 level = viewModel.getLvl(),
                                 XP = viewModel.getXP(),
-                                maxHP = 10, //TODO
-                                currentHP = 10, //TODO
+                                maxHP = viewModel.getMaxHP(),
+                                currentHP = viewModel.getMaxHP(),
                                 attStr = viewModel.getStr(),
                                 attDex = viewModel.getDex(),
                                 attCon = viewModel.getCon(),
@@ -314,9 +328,15 @@ fun CharacterScreen(
                             )
                         )
                     }
+
+                    //Show a success message
+                    insertSuccessToast.show()
+
+                    //Go back
+                    onGoBack()
                 } else {
                     //Send a Toast Message telling the user to enter more info.
-                    toast.show()
+                    dataFailToast.show()
                 }}) {
                 Text(text = stringResource(id = R.string.button_submit))
             }

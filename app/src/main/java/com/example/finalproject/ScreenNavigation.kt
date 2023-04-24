@@ -138,7 +138,10 @@ fun DndApp(
                 mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
             }
             composable(route = DnDScreen.CharacterScreen.name) {
-                CharacterScreen(title = "Create a Character", repo = repository)
+                CharacterScreen(title = "Create a Character", repo = repository, onGoBack = {
+                    navController.navigate(DnDScreen.HomeScreen.name)
+                    navController.clearBackStack(DnDScreen.HomeScreen.name)
+                })
             }
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(

@@ -34,4 +34,6 @@
     <string name="attr_wisdom_desc">Your hero\'s reasoning and awareness</string>
     <string name="attr_charisma">Charisma</string>
     <string name="attr_charisma_desc">Your hero\'s inherent charm.</string>
+    <string name="placeholder_enter_hp">"Enter your character's maximun health points "</string>
+    <string name="label_max_hp">Maximum HP</string>
 </resources>

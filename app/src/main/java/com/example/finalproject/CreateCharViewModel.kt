@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.update
 data class CharacterUIState(
     val name: String = "",
     val xp: Int = 0,
+    val maxHP: Int = 0,
+    val curHP: Int = 0,
     val level: Int = 0,
     val race: String = "",
     val cClass: String = "",
@@ -38,6 +40,20 @@ class CreateCharViewModel(context: Context): ViewModel() {
      */
     fun getName(): String {
         return _uiState.value.name
+    }
+
+    /**
+     * Returns the character's max HP
+     */
+    fun getMaxHP(): Int {
+        return _uiState.value.maxHP
+    }
+
+    /**
+     * Returns the character's current HP
+     */
+    fun getCurHP(): Int {
+        return _uiState.value.curHP
     }
 
     /**
@@ -225,6 +241,18 @@ class CreateCharViewModel(context: Context): ViewModel() {
     fun setDesc(value: String) {
         _uiState.update { currentState ->
             currentState.copy(description = value)
+        }
+    }
+
+    fun setMaxHP(value: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(maxHP = value)
+        }
+    }
+
+    fun setCurHP(value: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(curHP = value)
         }
     }
 }
