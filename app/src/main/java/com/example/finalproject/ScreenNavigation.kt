@@ -84,7 +84,7 @@ fun DndApp(
             )
         }
     ) {innerPadding ->
-        val uiState by viewModel.uiState.collectAsState()
+        val uiState by viewModel.uiState.collectAsState() //
 
         val context = LocalContext.current
         var database by remember{ mutableStateOf(CharacterDB.getInstance(context)) }
@@ -99,7 +99,7 @@ fun DndApp(
                 mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
             }
             composable(route = DnDScreen.CharacterScreen.name) {
-                CharacterScreen(title = "Create a Character")
+                CharacterScreen(title = "Create a Character", repo = repository)
             }
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(
