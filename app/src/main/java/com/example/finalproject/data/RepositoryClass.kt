@@ -2,7 +2,7 @@ package com.example.finalproject.data
 
 import kotlinx.coroutines.flow.Flow
 
-class RepositoryClass ( val conversionDao: CharacterDao
+class RepositoryClass (private val conversionDao: CharacterDao
 ): KotlinRepositoryInterface {
     override fun getAllCharacters(): Flow<List<CharacterEntity>>
             = conversionDao.getAllCharacters()
@@ -27,6 +27,17 @@ class RepositoryClass ( val conversionDao: CharacterDao
     override fun updateInvetory(inventoryEntity: InventoryEntity)
             = conversionDao.updateInvetory(inventoryEntity)
 
+    override suspend fun insertItem(item: ItemEntity) {
+        conversionDao.addItem(item)
+    }
+
+    override suspend fun deleteItem(item: ItemEntity) {
+        conversionDao.deleteItem(item)
+    }
+
+    override fun getAllItems(): Flow<List<ItemEntity>> {
+        return conversionDao.getAllItems()
+    }
     companion object {
         private var repository: KotlinRepositoryInterface? = null
         fun getRepository(conversionDatabase: CharacterDB):
