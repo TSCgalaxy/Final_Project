@@ -116,6 +116,7 @@ fun DiceRollingScreen(
 /**
  * Dice list is used to create a standard image for each dice within the top row of the app.
  * @param Die<Int> dice is the current object to display an image at the top bar.
+ *
  */
 @Composable
 fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
