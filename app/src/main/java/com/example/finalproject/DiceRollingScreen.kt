@@ -9,6 +9,9 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -133,12 +136,14 @@ fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
 
 @Composable
 fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -> Unit){
-    var counter by remember { mutableStateOf(0) }
-
-    rollers.forEach { item ->
-        Row() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ){
+        items(rollers) {item ->
             val diceImage by remember { mutableStateOf(item) }
-            IconButton(onClick = { onDiceChanged(item, false);counter -= 1 }) {
+            IconButton(onClick = { onDiceChanged(item, false)}) {
                 Image(
                     painter = painterResource(diceImage.currentImage),
                     contentDescription = "Dice",
@@ -148,61 +153,61 @@ fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -
                 )
             }
         }
-        counter += 1
     }
 }
 
 @Composable
 fun PopupWindowDialog(rollers: List<DiceObject>) {
     Popup(
-        alignment = Alignment.Center,
-        offset = IntOffset(50, 0)
+        alignment = Alignment.BottomCenter,
+        offset = IntOffset(50, -100)
 
     ) {
-
-
         Box(
             Modifier
-                .size(200.dp, (50 * rollers.size).dp)
+                .size(300.dp, (25 * rollers.size).dp)
                 .padding(top = 5.dp)
                 .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
                 .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                rollers.forEach { item ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(item.currentImage),
-                            contentDescription = "Dice",
-                            modifier = Modifier
-                                .height(40.dp)
-                                .width(40.dp),
-                            contentScale = ContentScale.Crop,
-                        )
-                        Spacer(modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(vertical = 1.dp))
-                        if (item.Lastroll != -1) {
-                            Text(
-                                text = "Result: " + item.Lastroll.toString(),
-                                style = MaterialTheme.typography.h1,
-                                fontSize = 20.sp
-                            )
-                        }
-                    }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ){
+                items(rollers){item ->
+                    popupRow(item = item)
 
                 }
             }
         }
     }
 
+}
+
+@Composable
+fun popupRow(item: DiceObject){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Image(
+            painter = painterResource(item.currentImage),
+            contentDescription = "Dice",
+            modifier = Modifier
+                .height(40.dp)
+                .width(40.dp),
+            contentScale = ContentScale.Crop,
+        )
+        Spacer(modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(vertical = 1.dp))
+        if (item.Lastroll != -1) {
+            Text(
+                text = "Result: " + item.Lastroll.toString(),
+                style = MaterialTheme.typography.h1,
+                fontSize = 20.sp
+            )
+        }
+    }
 }
