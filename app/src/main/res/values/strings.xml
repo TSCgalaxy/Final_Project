@@ -36,4 +36,5 @@
     <string name="attr_charisma_desc">Your hero\'s inherent charm.</string>
     <string name="placeholder_enter_hp">"Enter your character's maximun health points "</string>
     <string name="label_max_hp">Maximum HP</string>
+    <string name="send_to_creator">Send to Character Creator</string>
 </resources>
