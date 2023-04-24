@@ -4,10 +4,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,10 +22,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import com.example.finalproject.data.DiceObject
 import com.example.finalproject.data.DiceUiState
 
@@ -58,92 +64,52 @@ fun DiceRollingScreen(
 
     var rollers = uiState.diceToRoll
     var counter by remember { mutableStateOf(0) }
-
+    var ShowPopup by remember { mutableStateOf(false) }
 
 
     //Column to add the dice being rolled to
     Column(
-        modifier = Modifier.background(
-            MaterialTheme.colors.background)
-
+        modifier = Modifier
+            .background(
+                MaterialTheme.colors.background
+            )
+            .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //Scrollable list to display all the dice available to choose from.
-        LazyRow( modifier = modifier
-        ){
+        LazyRow(
+            modifier = modifier
+        ) {
             items(dice) { it ->
-                DiceCard(it, modifier, onDiceChanged )
+                DiceCard(it, modifier, onDiceChanged)
             }
         }
         Divider(thickness = 5.dp, modifier = modifier.padding(bottom = 16.dp))
-        Button(onClick = {onRollDice();
-            var text: String = "Results: "
-
-            for (roll in rollers) {
-                if (rollers.size > 1){
-                    text = text + roll.dice.faces.size.toString() + " sided = " + roll.Lastroll.toString() +", "
-                }
-                else
-                    text = text + roll.dice.faces.size.toString() + " sided = " + roll.Lastroll.toString()
-
+        Button(
+            onClick = {
+                if (!ShowPopup) {
+                    onRollDice()
+                };ShowPopup = !ShowPopup;counter += 1
             }
-
-            val duration = Toast.LENGTH_LONG
-            val toast = Toast.makeText( context, text, duration)
-            toast.show();
-            counter += 1},
-
-            modifier.align(alignment = Alignment.CenterHorizontally))
+        )
         {
-            Text(stringResource(R.string.roll))
+            if (!ShowPopup) {
+                Text(stringResource(R.string.roll))
+            } else {
+                Text("Dismiss")
+            }
         }
 
         Divider(thickness = 5.dp, modifier = modifier.padding(bottom = 16.dp))
 
-        //display dice below row
-        rollers.forEach {item ->
-            Log.d("fix yourself",item.getImage().toString())
-            val diceImage by remember{ mutableStateOf( item)}
-            IconButton(onClick = {onDiceChanged(item, false);counter -= 1} ) {
-                Image(
-                    painter = painterResource(diceImage.currentImage),
-                    contentDescription = "Dice",
-                    modifier = Modifier
-                        .height(100.dp)
-                        .width(100.dp),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-        }
+        middleDice(rollers = rollers, onDiceChanged = onDiceChanged)
+
         Divider(thickness = 5.dp, modifier = modifier.padding(bottom = 16.dp))
-        Column() {
-            rollers.forEach{
-                item ->
-                Row(modifier = modifier
-                    .fillMaxWidth()) {
-                    Image(
-                        painter = painterResource(item.currentImage),
-                        contentDescription = "Dice",
-                        modifier = Modifier
-                            .height(20.dp)
-                            .width(20.dp),
-                        contentScale = ContentScale.Crop,
-                    )
-                    Spacer(modifier = modifier.padding(horizontal = 32.dp))
-                    Text(
-                        text = "Result: " + item.Lastroll.toString(),
-                        style = MaterialTheme.typography.h1,
-                        fontSize = 20.sp
-                    )
-                }
-
-            }
+        if (ShowPopup) {
+            PopupWindowDialog(rollers = rollers)
         }
-
-
     }
-
 }
-
 /**
  * Dice list is used to create a standard image for each dice within the top row of the app.
  * @param Die<Int> dice is the current object to display an image at the top bar.
@@ -161,6 +127,82 @@ fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
                 .width(80.dp),
             contentScale = ContentScale.Crop,
             )
+    }
+
+}
+
+@Composable
+fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -> Unit){
+    var counter by remember { mutableStateOf(0) }
+
+    rollers.forEach { item ->
+        Row() {
+            val diceImage by remember { mutableStateOf(item) }
+            IconButton(onClick = { onDiceChanged(item, false);counter -= 1 }) {
+                Image(
+                    painter = painterResource(diceImage.currentImage),
+                    contentDescription = "Dice",
+                    modifier = Modifier
+                        .height(100.dp)
+                        .width(100.dp)
+                )
+            }
+        }
+        counter += 1
+    }
+}
+
+@Composable
+fun PopupWindowDialog(rollers: List<DiceObject>) {
+    Popup(
+        alignment = Alignment.Center,
+        offset = IntOffset(50, 0)
+
+    ) {
+
+
+        Box(
+            Modifier
+                .size(200.dp, (50 * rollers.size).dp)
+                .padding(top = 5.dp)
+                .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
+                .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                rollers.forEach { item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Image(
+                            painter = painterResource(item.currentImage),
+                            contentDescription = "Dice",
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.Crop,
+                        )
+                        Spacer(modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .padding(vertical = 1.dp))
+                        if (item.Lastroll != -1) {
+                            Text(
+                                text = "Result: " + item.Lastroll.toString(),
+                                style = MaterialTheme.typography.h1,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
 }

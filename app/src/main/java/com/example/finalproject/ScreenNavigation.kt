@@ -46,15 +46,6 @@ fun DndAppBar(
                 )
             }
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
-            if(currentScreen == DnDScreen.CharacterScreen || currentScreen == DnDScreen.DiceRoller)
-            {
-                IconButton(onClick = { navController.navigate(DnDScreen.HomeScreen.name) }) {
-                    Image(
-                        painter = painterResource(R.drawable.d20_0),
-                        contentDescription = null
-                    )
-                }
-            }
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
             IconButton(onClick = { navController.navigate(DnDScreen.DiceRoller.name)
             }) {

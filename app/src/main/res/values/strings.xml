@@ -34,4 +34,5 @@
     <string name="attr_wisdom_desc">Your hero\'s reasoning and awareness</string>
     <string name="attr_charisma">Charisma</string>
     <string name="attr_charisma_desc">Your hero\'s inherent charm.</string>
+    <string name="send_to_creator">Send to Character Creator</string>
 </resources>
