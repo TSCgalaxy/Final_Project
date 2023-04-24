@@ -25,7 +25,7 @@ class CharacterEntity (
     val maxHP: Int,
 
     @ColumnInfo(name = "currentHP")
-    val currentHP: Int,
+    var currentHP: Int,
 
     // Strength
     @ColumnInfo(name = "attStr")

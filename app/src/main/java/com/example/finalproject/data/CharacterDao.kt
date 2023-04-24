@@ -1,9 +1,11 @@
 package com.example.finalproject.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -20,5 +22,15 @@ interface CharacterDao {
     fun getAllCharacters(): Flow<List<CharacterEntity>>
 
     // Item access queries here
-    // ...
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addItem(item: ItemEntity)
+
+    @Query("SELECT * FROM item")
+    fun getAllItems(): Flow<List<ItemEntity>>
+
+    @Delete
+    suspend fun deleteItem(item: ItemEntity)
+
+    @Update
+    suspend fun updateCharacterHP(char: CharacterEntity)
 }
