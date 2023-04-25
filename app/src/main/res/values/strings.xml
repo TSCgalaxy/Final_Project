@@ -2,6 +2,7 @@
     <string name="app_name">Final Project</string>
     <string name="main_screen">Home Page</string>
     <string name="character_creator">Character Creation</string>
+    <string name="profile_screen">Character Profile</string>
     <string name="dice_roller">Dice Roller</string>
     <string name ="roll">Roll</string>
     <string name="name_1">Bob</string>

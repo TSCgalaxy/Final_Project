@@ -38,6 +38,10 @@ class RepositoryClass (private val conversionDao: CharacterDao
     override fun getAllItems(): Flow<List<ItemEntity>> {
         return conversionDao.getAllItems()
     }
+
+    override fun getCharacter(id: Int): Flow<CharacterEntity> {
+        return conversionDao.getCharacter(id)
+    }
     companion object {
         private var repository: KotlinRepositoryInterface? = null
         fun getRepository(conversionDatabase: CharacterDB):

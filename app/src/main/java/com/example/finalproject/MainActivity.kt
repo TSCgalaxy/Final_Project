@@ -10,6 +10,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.finalproject.data.CharacterDB
+import com.example.finalproject.data.RepositoryClass
 import com.example.finalproject.ui.theme.FinalProjectTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,16 +23,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    //DndApp()
+                    DndApp()
+                    /*val db = CharacterDB.getInstance(this)
+                    val repo = RepositoryClass(db.characterDAO())
+                    val viewModel = ItemsViewModel(repo)
+                    val viewModelChar = CharacterProfileViewModel(repo)
+
                     CharacterProfileScreen(
-                        strength = 10,
-                        dexterity = 10,
-                        constitution = 10,
-                        intelligence = 10,
-                        wisdom = 10,
-                        charisma = 10,
-                        level = 1,
-                    )
+                        ItemViewModel = viewModel,
+                        characterViewModel = viewModelChar
+                    )*/
                 }
 
             }

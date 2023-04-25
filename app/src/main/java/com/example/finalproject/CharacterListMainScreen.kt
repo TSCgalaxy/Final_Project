@@ -53,7 +53,7 @@ fun mainCharacterListScreen(
                 }
             }
             items(characterList) {
-                    Button(onClick = onCharacterButtonClicked,) {
+                    Button(onClick = onCharacterButtonClicked) {
                         CharacterItem(info = it)
                     }
                 }
