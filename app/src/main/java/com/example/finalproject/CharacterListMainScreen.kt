@@ -43,7 +43,7 @@ fun mainCharacterListScreen(
     {
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
             items(characterList) {
-                    Button(onClick = onCharacterButtonClicked,) {
+                    Button(onClick = onCharacterButtonClicked) {
                         CharacterItem(info = it)
                     }
                 }

@@ -11,4 +11,6 @@ interface KotlinRepositoryInterface {
     suspend fun deleteItem(item: ItemEntity)
 
     fun getAllItems(): Flow<List<ItemEntity>>
+
+    fun getCharacter(id: Int): Flow<CharacterEntity>
 }

@@ -5,25 +5,42 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finalproject.data.CharacterDao
-import com.example.finalproject.data.CharacterEntity
 import com.example.finalproject.data.ItemEntity
+import com.example.finalproject.data.ItemState
 import com.example.finalproject.data.RepositoryClass
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class CharacterProfileScreenViewModel(
+class ItemsViewModel(
     private val repo : RepositoryClass
 ) : ViewModel() {
 
-    val items = repo.getAllItems()
+    //val items = repo.getAllItems()
     var isDialogOpen by mutableStateOf(false)
     var isItemDialogueOpen by mutableStateOf(false)
-    var item by mutableStateOf(ItemEntity(0, "", 1))
 
+
+    var state by mutableStateOf(ItemState())
+        private set
+
+    init {
+        getItems()
+    }
+
+
+    private fun getItems(){
+        viewModelScope.launch {
+            repo.getAllItems().collectLatest {
+                state = state.copy(
+                    items = it
+                )
+            }
+        }
+    }
 
     fun addItem(item: ItemEntity) = viewModelScope.launch {
         repo.insertItem(item)
+
     }
 
     fun deleteItem(item: ItemEntity) = viewModelScope.launch {
@@ -46,6 +63,20 @@ class CharacterProfileScreenViewModel(
      */
     fun closeDialog() {
         isDialogOpen = false
+    }
+
+    /**
+     * Function to open the Add Item dialog
+     */
+    fun openItemDialog() {
+        isItemDialogueOpen = true
+    }
+
+    /**
+     * Function to close the Add Item dialog
+     */
+    fun closeItemDialog() {
+        isItemDialogueOpen = false
     }
 
 

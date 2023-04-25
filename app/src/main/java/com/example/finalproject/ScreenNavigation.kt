@@ -24,7 +24,8 @@ import com.example.finalproject.data.DiceObject
 enum class DnDScreen(@StringRes val title: Int) {
     HomeScreen(title = R.string.main_screen),
     CharacterScreen(title = R.string.character_creator),
-    DiceRoller(title = R.string.dice_roller)
+    DiceRoller(title = R.string.dice_roller),
+    ProfileScreen(title = R.string.profile_screen)
 }
 
 @Composable
