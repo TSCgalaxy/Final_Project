@@ -12,7 +12,7 @@ import androidx.room.TypeConverters
  */
 @Database(
     entities = [(CharacterEntity::class), (ItemEntity::class), (InventoryEntity::class)],
-    version = 3,
+    version = 2,
     exportSchema = false)
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
@@ -36,5 +36,3 @@ abstract class CharacterDB: RoomDatabase() {
         }
     }
 }
-
-//
