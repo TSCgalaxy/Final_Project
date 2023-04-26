@@ -1,6 +1,10 @@
 package com.example.finalproject
 
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -231,7 +235,7 @@ fun CharacterScreen(
     modifier: Modifier = Modifier,
     viewModel: CreateCharViewModel = CreateCharViewModel(LocalContext.current),
     repo: RepositoryClass,
-    onGoBack: () -> Unit
+    onGoBack: () -> Unit,
 ) {
 
     //Coroutine scope
@@ -242,6 +246,12 @@ fun CharacterScreen(
         Toast.LENGTH_SHORT)
     var insertSuccessToast = Toast.makeText(LocalContext.current, "Character Added!",
         Toast.LENGTH_SHORT)
+
+    // Image Picker stuff
+    //Launcher
+    var pickIntentLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(), onResult = {
+        viewModel.setImageUri(it ?: Uri.EMPTY)
+    })
 
     //Main Body
     LazyColumn() {
@@ -256,6 +266,12 @@ fun CharacterScreen(
 
             //Title
             Text(text = title, fontSize = 24.sp)
+
+            // Select Image Button
+            Button(onClick = {
+                //Get Image
+                pickIntentLauncher.launch("image/*")
+            }) {Text(text="Add Image")}
 
             //Name
             CharacterTextField(
@@ -303,6 +319,7 @@ fun CharacterScreen(
                     .height(128.dp),
                 modifyStateCallback = {viewModel.setDesc(it as String)}
                 )
+
 
             //Submit button
             Button(onClick = {
