@@ -1,6 +1,9 @@
 package com.example.finalproject
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -23,12 +26,9 @@ import com.example.finalproject.data.*
 import kotlinx.coroutines.launch
 import java.util.*
 
-//composable(route = DnDScreen.) {
-//    mainScreen(viewModel = viewModel,
-//        onPreviousOrder = { navController.navigate(CupcakeScreen.Previous.name)},
-//        onStartButtonClicked = {navController.navigate(CupcakeScreen.Flavor.name)}
-//    )
-//}
+class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
+
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
@@ -43,21 +43,22 @@ fun mainCharacterListScreen(
     )
     {
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            for (x in NPCs.subs) {
-                item {
+        for (x in NPCs.subs) {
+            item {
 
-                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice)
-                    Button(onClick = onCharacterButtonClicked,) {
-                        CharacterItem(info = info)
-                    }
+                var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice)
+                Button(onClick = onCharacterButtonClicked,) {
+                    CharacterItem(info = info)
                 }
             }
-            items(characterList) {
-                    Button(onClick = onCharacterButtonClicked) {
-                        CharacterItem(info = it)
-                    }
+        }
+        items(characterList) {
+                Button(onClick = onCharacterButtonClicked,) {
+                    CharacterItem(info = it)
+
                 }
             }
+        }
     }
 }
 

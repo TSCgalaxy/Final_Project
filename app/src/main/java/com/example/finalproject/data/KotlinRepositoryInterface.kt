@@ -18,5 +18,6 @@ interface KotlinRepositoryInterface {
 
     fun updateNPC(player: CharacterEntity)
     fun updateInvetory(inventoryEntity: InventoryEntity)
-
+    fun getCharacter(userId: Int): Flow<CharacterEntity>?
 }
+//
