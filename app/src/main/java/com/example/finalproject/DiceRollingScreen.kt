@@ -63,6 +63,7 @@ fun DiceRollingScreen(
 
     val uiState by diceViewModel.uiState.collectAsState()
 
+
     //var rollers by  mutableStateListOf(diceUiState.diceToRoll.observeAsState())
 
     var rollers = uiState.diceToRoll
@@ -73,10 +74,10 @@ fun DiceRollingScreen(
     //Column to add the dice being rolled to
     Column(
         modifier = Modifier
-            .background(
-                MaterialTheme.colors.background
-            )
-            .fillMaxHeight(),
+                .background(
+                        MaterialTheme.colors.background
+                )
+                .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //Scrollable list to display all the dice available to choose from.
@@ -128,8 +129,8 @@ fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
             painter = painterResource(obj.getImage()),
             contentDescription = "Dice",
             modifier = Modifier
-                .height(80.dp)
-                .width(80.dp),
+                    .height(80.dp)
+                    .width(80.dp),
             contentScale = ContentScale.Crop,
             )
     }
@@ -150,8 +151,8 @@ fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -
                     painter = painterResource(diceImage.currentImage),
                     contentDescription = "Dice",
                     modifier = Modifier
-                        .height(100.dp)
-                        .width(100.dp)
+                            .height(100.dp)
+                            .width(100.dp)
                 )
             }
         }
@@ -160,56 +161,102 @@ fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -
 
 @Composable
 fun PopupWindowDialog(rollers: List<DiceObject>) {
+    var d4Total = 0
+    var d6Total: Int = 0
+    var d8Total: Int = 0
+    var d10Total: Int = 0
+    var d12Total: Int = 0
+    var d20Total: Int = 0
+    rollers.forEach {item ->
+         if( item.dice.faces.size == 4)
+         {
+             d4Total += item.Lastroll
+         }
+        else if (item.dice.faces.size == 6)
+         {
+            d6Total += item.Lastroll
+         }
+        else if (item.dice.faces.size == 8)
+         {
+            d8Total += item.Lastroll
+         }
+        else if (item.dice.faces.size == 10)
+         {
+            d10Total += item.Lastroll
+         }
+        else if (item.dice.faces.size == 12)
+         {
+            d12Total += item.Lastroll
+         }
+        else
+        {
+            d20Total += item.Lastroll
+        }
+    }
     Popup(
         alignment = Alignment.BottomCenter,
-        offset = IntOffset(50, -100)
+        offset = IntOffset(0, -100)
 
     ) {
         Box(
-            Modifier
-                .size(300.dp, (25 * rollers.size).dp)
-                .padding(top = 5.dp)
-                .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
-                .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
+                Modifier
+                        .size(300.dp, (25 * rollers.size).dp)
+                        .padding(top = 5.dp)
+                        .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
+                        .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ){
-                items(rollers){item ->
-                    popupRow(item = item)
-
+            Column() {
+                if (d4Total > 0)
+                {
+                    Text(
+                            text = "4 Sided Total: " + d4Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp
+                    )
+                }
+                if (d6Total > 0)
+                {
+                    Text(
+                            text = "6 Sided Total: " + d6Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
+                if (d8Total > 0)
+                {
+                    Text(
+                            text = "8 Sided Total: " + d8Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp
+                    )
+                }
+                if (d10Total > 0)
+                {
+                    Text(
+                            text = "10 Sided Total: " + d10Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp
+                    )
+                }
+                if (d12Total > 0)
+                {
+                    Text(
+                            text = "12 Sided Total: " + d12Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp
+                    )
+                }
+                if (d20Total > 0)
+                {
+                    Text(
+                            text = "20 Sided Total: " + d20Total.toString(),
+                            style = MaterialTheme.typography.h1,
+                            fontSize = 20.sp
+                    )
                 }
             }
         }
     }
 
-}
-
-@Composable
-fun popupRow(item: DiceObject){
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        Image(
-            painter = painterResource(item.currentImage),
-            contentDescription = "Dice",
-            modifier = Modifier
-                .height(40.dp)
-                .width(40.dp),
-            contentScale = ContentScale.Crop,
-        )
-        Spacer(modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .padding(vertical = 1.dp))
-        if (item.Lastroll != -1) {
-            Text(
-                text = "Result: " + item.Lastroll.toString(),
-                style = MaterialTheme.typography.h1,
-                fontSize = 20.sp
-            )
-        }
-    }
 }
