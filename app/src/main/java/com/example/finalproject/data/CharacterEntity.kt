@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 /**
  * Represents a D&D character.
  */
-@Entity (tableName = "character")
+//
+@Entity (tableName = "tableplayer")
 class CharacterEntity (
     @PrimaryKey (autoGenerate = true)
     val id: Int = 0,
-
     @ColumnInfo(name = "name")
     val name: String,
 
