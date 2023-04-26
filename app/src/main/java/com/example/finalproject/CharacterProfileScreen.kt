@@ -246,7 +246,7 @@ fun AddItemUI(
                 Button(
                     onClick = {
                         onDismiss()
-                        val item = ItemEntity(name = name, level = level.toInt())
+                        val item = ItemEntity(name = name, level = level)
                         addItem(item)
                     }
                 ) {

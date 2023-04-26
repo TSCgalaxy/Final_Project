@@ -173,7 +173,7 @@ fun CharacterAttributes(
                 .fillMaxWidth(1f)
         ) {
             CharacterTextField(
-                placeholder = characterAttributes[i].second,
+               placeholder = characterAttributes[i].second,
                 label = characterAttributes[i].first,
                 modifier = Modifier
                     .height(128.dp)
