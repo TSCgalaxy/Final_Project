@@ -1,6 +1,7 @@
 package com.example.finalproject
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +22,8 @@ data class CharacterUIState(
     val attrWisdom: Int = 0,
     val attrIntelligence: Int = 0,
     val attrCharisma: Int = 0,
-    val description: String = ""
+    val description: String = "",
+    val image: Uri = Uri.EMPTY
 
 )
 class CreateCharViewModel(context: Context): ViewModel() {
@@ -254,5 +256,15 @@ class CreateCharViewModel(context: Context): ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(curHP = value)
         }
+    }
+
+    fun setImageUri(value:  Uri) {
+        _uiState.update { currentState ->
+            currentState.copy(image = value)
+        }
+    }
+
+    fun getImageUri(): Uri {
+        return _uiState.value.image
     }
 }

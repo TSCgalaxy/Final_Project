@@ -11,7 +11,7 @@ import androidx.room.TypeConverters
  * The character has various attributes and possesses an inventory of items.
  */
 //
-@Database(entities = [CharacterEntity::class, ItemEntity::class, InventoryEntity::class], version = 2, exportSchema = false)
+@Database(entities = [CharacterEntity::class, ItemEntity::class, InventoryEntity::class], version = 3, exportSchema = false)
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
     abstract fun characterDAO(): CharacterDao
