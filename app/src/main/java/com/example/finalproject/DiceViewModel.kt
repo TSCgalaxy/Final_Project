@@ -43,6 +43,7 @@ class DiceViewModel: ViewModel() {
         var counter = _uiState.value.counter
         _uiState.value.diceToRoll.forEach {item ->
              item.roll()
+
         }
        // tempList.add(DiceObject(Die.d6(), 5, R.drawable.dice_1))
         _uiState.update  {currentState ->
@@ -54,4 +55,5 @@ class DiceViewModel: ViewModel() {
 
 
     }
+
 }
