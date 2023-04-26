@@ -305,6 +305,19 @@ fun InventoryDisplay(
     val itemState = viewModel.state
 
     Column {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()) {
+            IconButton(onClick = { viewModel.openItemDialog() }) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = null,
+                    modifier = modifier.size(30.dp),
+                    tint = Color.Green
+                )
+            }
+            Text(text = "Add", style = MaterialTheme.typography.h5)
+        }
         itemState.items.forEach { item ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -312,18 +325,6 @@ fun InventoryDisplay(
                     .fillMaxWidth()
             ) {
 
-                IconButton(onClick = { viewModel.openItemDialog() }) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = null,
-                        modifier = modifier.size(30.dp),
-                        tint = Color.Green
-                    )
-                }
-
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
                 Text(text = item.name, style = MaterialTheme.typography.h5)
                 Spacer(
                     modifier = Modifier.weight(1f)
