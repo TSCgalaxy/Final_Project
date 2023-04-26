@@ -1,6 +1,11 @@
 package com.example.finalproject
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.example.finalproject.data.*
 import kotlinx.coroutines.launch
 
@@ -100,10 +106,15 @@ fun DndApp(
                 mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
             }
             composable(route = DnDScreen.CharacterScreen.name) {
-                CharacterScreen(title = "Create a Character", repo = repository, onGoBack = {
-                    navController.navigate(DnDScreen.HomeScreen.name)
-                    navController.clearBackStack(DnDScreen.HomeScreen.name)
-                })
+
+
+                CharacterScreen(title = "Create a Character", repo = repository,
+                    viewModel = CreateCharViewModel(LocalContext.current),
+                    onGoBack = {
+                        navController.navigate(DnDScreen.HomeScreen.name)
+                        navController.clearBackStack(DnDScreen.HomeScreen.name)
+                    },
+                )
             }
             composable(route = DnDScreen.DiceRoller.name) {
                 DiceRollingScreen(
