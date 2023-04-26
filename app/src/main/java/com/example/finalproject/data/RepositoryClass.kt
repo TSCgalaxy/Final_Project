@@ -28,7 +28,7 @@ class RepositoryClass ( val conversionDao: CharacterDao
             = conversionDao.updateInventory(inventoryEntity)
     override fun getCharacter(userId: Int): Flow<CharacterEntity>?
             = conversionDao.NPCbyID(userId)
-
+//
     companion object {
         private var repository: KotlinRepositoryInterface? = null
         fun getRepository(conversionDatabase: CharacterDB):

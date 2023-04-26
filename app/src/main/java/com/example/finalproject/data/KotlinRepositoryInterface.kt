@@ -20,3 +20,4 @@ interface KotlinRepositoryInterface {
     fun updateInvetory(inventoryEntity: InventoryEntity)
     fun getCharacter(userId: Int): Flow<CharacterEntity>?
 }
+//

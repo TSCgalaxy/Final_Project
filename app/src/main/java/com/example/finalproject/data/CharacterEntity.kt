@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 /**
  * Represents a D&D character.
  */
+//
 @Entity (tableName = "tableplayer")
 class CharacterEntity (
     @PrimaryKey (autoGenerate = true)

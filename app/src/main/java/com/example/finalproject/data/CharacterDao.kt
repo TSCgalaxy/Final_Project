@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Data Access Object for the Characters and their inventory Items
  */
+//
 @Dao
 interface CharacterDao {
     // Insert a character into the database

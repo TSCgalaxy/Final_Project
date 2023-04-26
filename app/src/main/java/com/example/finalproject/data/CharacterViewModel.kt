@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-
+//
 class CharacterViewModel(repository:KotlinRepositoryInterface): ViewModel() {
     companion object {
         private const val TIMEOUT_MILLIS = 5_000L
