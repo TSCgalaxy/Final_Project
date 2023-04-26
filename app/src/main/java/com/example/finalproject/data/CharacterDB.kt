@@ -36,3 +36,5 @@ abstract class CharacterDB: RoomDatabase() {
         }
     }
 }
+
+//
