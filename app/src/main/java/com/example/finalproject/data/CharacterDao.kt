@@ -41,4 +41,7 @@ interface CharacterDao {
     fun getAllFromInventory(): Flow<List<InventoryEntity>>
     // Item access queries here
     // ...
+
+    @Query("SELECT i.* FROM item i JOIN inventory inv on i.id = inv.itemID JOIN tableplayer t ON t.id = inv.characterID WHERE t.id = :userId")
+    fun getInventory(userId: Int): Flow<List<ItemEntity>>
 }

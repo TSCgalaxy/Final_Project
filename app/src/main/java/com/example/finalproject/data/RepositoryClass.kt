@@ -28,6 +28,9 @@ class RepositoryClass ( val conversionDao: CharacterDao
             = conversionDao.updateInventory(inventoryEntity)
     override fun getCharacter(userId: Int): Flow<CharacterEntity>?
             = conversionDao.NPCbyID(userId)
+
+    fun getInventory(userId: Int): Flow<List<ItemEntity>>
+            = conversionDao.getInventory(userId)
 //
     companion object {
         private var repository: KotlinRepositoryInterface? = null
