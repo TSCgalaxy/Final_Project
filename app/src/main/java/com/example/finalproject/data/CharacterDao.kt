@@ -44,4 +44,7 @@ interface CharacterDao {
 
     @Query("SELECT i.* FROM item i JOIN inventory inv on i.id = inv.itemID JOIN tableplayer t ON t.id = inv.characterID WHERE t.id = :userId")
     fun getInventory(userId: Int): Flow<List<ItemEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addInventory(inventoryEntity: InventoryEntity)
 }

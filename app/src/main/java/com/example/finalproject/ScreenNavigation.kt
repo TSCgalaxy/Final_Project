@@ -113,9 +113,9 @@ fun DndApp(
             startDestination = DnDScreen.HomeScreen.route,
             modifier = modifier.padding(innerPadding)
         ) {
-             /*composable(route = DnDScreen.HomeScreen.name) {
-                 mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
-             }*/
+            /*composable(route = DnDScreen.HomeScreen.name) {
+                mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
+            }*/
 
             composable(route = DnDScreen.HomeScreen.route) {
                 mainCharacterListScreen(onCharacterButtonClicked = { id ->

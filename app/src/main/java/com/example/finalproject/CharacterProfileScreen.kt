@@ -3,7 +3,6 @@ package com.example.finalproject
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,19 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
-import com.example.finalproject.data.CharacterEntity
 import com.example.finalproject.data.ItemEntity
 
 
 /**
  * This is the character profile screen. It displays the character's name, level, and stats.
  * @param modifier Modifier to set to this composable
- * @param strength The character's strength stat
- * @param dexterity The character's dexterity stat
- * @param constitution The character's constitution stat
- * @param intelligence The character's intelligence stat
- * @param wisdom The character's wisdom stat
- * @param charisma The character's charisma stat
+ * @param characterViewModel The view model to get the character data
  */
 @Composable
 fun CharacterProfileScreen(
@@ -49,87 +42,87 @@ fun CharacterProfileScreen(
 ) {
     val characterState = characterViewModel.state
 
-    Box(modifier = modifier.fillMaxWidth()) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.images
-                    ),
-                    contentDescription = null,
-                    modifier = modifier
-                        .clip(CircleShape)
-                        .size(140.dp)
-                )
-                Spacer(modifier = modifier.width(30.dp))
-                Text(text = "${characterState.character?.name}", style = MaterialTheme.typography.h4)
-            }
-            Text(
-                text = "Level: ",
-                style = MaterialTheme.typography.h4
+    //Box(modifier = modifier.fillMaxWidth()) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(
+                    id = R.drawable.images
+                ),
+                contentDescription = null,
+                modifier = modifier
+                    .clip(CircleShape)
+                    .size(140.dp)
             )
-            OutlinedButton(
-                onClick = { characterViewModel.openDialog() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
-                border = BorderStroke(2.dp, Color.White),
-            ) {
-                Text(text = "Current HP / Max HP", style = MaterialTheme.typography.h5)
-            }
-
-            if (characterViewModel.isDialogOpen) {
-                CustomDialogue(
-                    onDismiss = { characterViewModel.closeDialog() },
-                    viewModel = characterViewModel,
-                )
-            }
-            Text(text = "Stats", style = MaterialTheme.typography.h4)
-            StatsDisplay(
-                modifier = modifier,
-                viewModel = characterViewModel,
-            )
-
-            Text(text = "Inventory", style = MaterialTheme.typography.h4)
-            //InventoryDisplay
-            InventoryDisplay(
-                modifier = modifier,
-                viewModel = characterViewModel,
-            )
-
-            if (characterViewModel.isItemDialogueOpen) {
-                AddItemUI(
-                    onDismiss = { characterViewModel.closeItemDialog() },
-                    addItem = { item -> characterViewModel.addItem(item) }
-                )
-            }
-
+            Spacer(modifier = modifier.width(30.dp))
+            Text(text = "${characterState.character?.name}", style = MaterialTheme.typography.h4)
         }
-        //Spacer(modifier = Modifier.weight(1f))
-        /*Button(
+        Text(
+            text = "Level: ",
+            style = MaterialTheme.typography.h4
+        )
+        OutlinedButton(
+            onClick = { characterViewModel.openDialog() },
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+            border = BorderStroke(2.dp, Color.White),
+        ) {
+            Text(text = "Current HP / Max HP", style = MaterialTheme.typography.h5)
+        }
+
+        if (characterViewModel.isDialogOpen) {
+            CustomDialogue(
+                onDismiss = { characterViewModel.closeDialog() },
+                viewModel = characterViewModel,
+            )
+        }
+        Text(text = "Stats", style = MaterialTheme.typography.h4)
+        StatsDisplay(
+            modifier = modifier,
+            viewModel = characterViewModel,
+        )
+
+        Text(text = "Inventory", style = MaterialTheme.typography.h4)
+        //InventoryDisplay
+        InventoryDisplay(
+            modifier = modifier,
+            viewModel = characterViewModel,
+        )
+
+        if (characterViewModel.isItemDialogueOpen) {
+            AddItemUI(
+                onDismiss = { characterViewModel.closeItemDialog() },
+                addItem = { item -> characterViewModel.addItem(item) }
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Button(
             onClick = {
                 characterState.character?.let { characterViewModel.deleteCharacter(character = it) }
                 navController.popBackStack()
-                      },
+            },
             modifier = modifier
-                .align(Alignment.BottomEnd)
+                .align(Alignment.CenterHorizontally)
                 .padding(16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
         ) {
             Text(text = "Delete", style = MaterialTheme.typography.h5)
-        }*/
+        }
     }
+
+
 }
 
 /**
  * a custom dialogue that allows the user to add an item to their inventory
  * @param onDismiss function to dismiss the dialogue
- * @param char the character to update its HP
+ * @param viewModel the view model to add the item to
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -164,7 +157,7 @@ fun CustomDialogue(
                 ) {
                     Button(
                         onClick = {
-                           // viewModel.state.character?.let { viewModel.healCharacter(it) }
+                            viewModel.state.character?.let { viewModel.healCharacter(it) }
                             onDismiss()
                         },
                         shape = RoundedCornerShape(16.dp),
@@ -178,7 +171,7 @@ fun CustomDialogue(
 
                     Button(
                         onClick = {
-                            //viewModel.state.character?.let { viewModel.damageCharacter(it) }
+                            viewModel.state.character?.let { viewModel.damageCharacter(it) }
                             onDismiss()
                         },
                         shape = RoundedCornerShape(16.dp),
@@ -200,6 +193,7 @@ fun CustomDialogue(
  * a custom dialogue that allows the user to add an item to their inventory
  * @param onDismiss function to dismiss the dialogue
  * @param modifier modifier for the dialogue
+ * @param addItem function to add the item to the view model
  */
 @Composable
 fun AddItemUI(

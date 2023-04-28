@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.example.finalproject.data.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -36,7 +35,7 @@ class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
     onCharacterButtonClicked: (Int) -> Unit,
-    viewmodel : CharacterViewModel,
+    viewmodel : CharacterViewModel
 ){
     val NPCs by viewmodel.conversionUIModel.collectAsState()
     Scaffold(
@@ -44,17 +43,17 @@ fun mainCharacterListScreen(
     )
     {
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
-        for (x in NPCs.subs) {
-            item {
+            for (x in NPCs.subs) {
+                item {
 
-                var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
-                Button(onClick = { onCharacterButtonClicked(x.id) }) {
-                    CharacterItem(info = info)
+                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
+                    Button(onClick = { onCharacterButtonClicked(x.id) },) {
+                        CharacterItem(info = info)
+                    }
                 }
             }
-        }
-        items(characterList) {
-                Button(onClick = { onCharacterButtonClicked(it.id) }) {
+            items(characterList) {
+                Button(onClick = { onCharacterButtonClicked(it.id) },) {
                     CharacterItem(info = it)
 
                 }
