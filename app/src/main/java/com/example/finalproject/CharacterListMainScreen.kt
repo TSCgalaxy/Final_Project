@@ -1,6 +1,9 @@
 package com.example.finalproject
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -8,48 +11,54 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.finalproject.data.CharacterViewModel
+import com.example.finalproject.data.*
+import kotlinx.coroutines.launch
+import java.util.*
 
-//composable(route = DnDScreen.) {
-//    mainScreen(viewModel = viewModel,
-//        onPreviousOrder = { navController.navigate(CupcakeScreen.Previous.name)},
-//        onStartButtonClicked = {navController.navigate(CupcakeScreen.Flavor.name)}
-//    )
-//}
+class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
+
+}
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
-    onCharacterButtonClicked: () -> Unit,
+    onCharacterButtonClicked: (Int) -> Unit,
     viewmodel : CharacterViewModel
 ){
-
-
+    val NPCs by viewmodel.conversionUIModel.collectAsState()
     Scaffold(
         bottomBar  = {}
     )
     {
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
-            items(characterList) {
-                    Button(onClick = onCharacterButtonClicked) {
-                        CharacterItem(info = it)
+            for (x in NPCs.subs) {
+                item {
+
+                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
+                    Button(onClick = { onCharacterButtonClicked(x.id) },) {
+                        CharacterItem(info = info)
                     }
                 }
             }
+            items(characterList) {
+                Button(onClick = { onCharacterButtonClicked(it.id) },) {
+                    CharacterItem(info = it)
+
+                }
+            }
+        }
     }
 }
 
@@ -98,13 +107,13 @@ fun CharacterInfo(@DrawableRes dogIcon: Int, modifier: Modifier = Modifier) {
 fun CharacterInformation(dogName: String, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
     Column {
         Text(
-            text = (dogName),
-            style = MaterialTheme.typography.h3,
+            text = dogName,
+            style = MaterialTheme.typography.h4,
             modifier = modifier.padding(top = 8.dp)
         )
         Text(
             text = "$health / $maxHealth",
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.h5
         )
     }
 }
