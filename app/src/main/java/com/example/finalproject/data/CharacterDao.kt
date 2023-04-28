@@ -18,7 +18,7 @@ interface CharacterDao {
     suspend fun addCharacter(player: CharacterEntity)
 
     //Return a list of all Characters in the DB
-    @Query("SELECT * FROM character")
+    @Query("SELECT * FROM tableplayer")
     fun getAllCharacters(): Flow<List<CharacterEntity>>
 
     // Item access queries here
@@ -34,6 +34,6 @@ interface CharacterDao {
     @Update
     suspend fun updateCharacterHP(player: CharacterEntity)
 
-    @Query("SELECT * FROM character WHERE id =:id")
+    @Query("SELECT * FROM tableplayer WHERE id =:id")
     fun getCharacter(id: Int): Flow<CharacterEntity>
 }

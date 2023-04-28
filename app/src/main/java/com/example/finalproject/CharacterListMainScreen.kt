@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.finalproject.data.CharacterViewModel
 
 //composable(route = DnDScreen.) {
 //    mainScreen(viewModel = viewModel,
@@ -29,11 +30,12 @@ import androidx.compose.ui.unit.dp
 //    )
 //}
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
     onCharacterButtonClicked: () -> Unit,
+    viewmodel : CharacterViewModel
 ){
 
 
@@ -93,10 +95,10 @@ fun CharacterInfo(@DrawableRes dogIcon: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CharacterInformation(@StringRes dogName: Int, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
+fun CharacterInformation(dogName: String, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
     Column {
         Text(
-            text = stringResource(dogName),
+            text = (dogName),
             style = MaterialTheme.typography.h3,
             modifier = modifier.padding(top = 8.dp)
         )

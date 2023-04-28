@@ -96,7 +96,7 @@ fun DndApp(
         val context = LocalContext.current
         var database by remember{ mutableStateOf(CharacterDB.getInstance(context)) }
         var repository by remember{ mutableStateOf(RepositoryClass(database.characterDAO())) }
-        repository.getAllItem()
+        repository.getAllItems()
         NavHost(
             navController = navController,
             startDestination = DnDScreen.HomeScreen.name,

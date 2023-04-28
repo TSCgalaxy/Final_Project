@@ -30,11 +30,11 @@ class ItemsViewModel(
 
     private fun getItems(){
         viewModelScope.launch {
-            repo.getAllItem().collectLatest {
-                state = state.copy(
-                    items = it
-                )
-            }
+//            repo.getAllItem().collectLatest {
+//                state = state.copy(
+//                    items = it
+//                )
+//            }
         }
     }
 
@@ -44,7 +44,7 @@ class ItemsViewModel(
     }
 
     fun deleteItem(item: ItemEntity) = viewModelScope.launch {
-        repo.removeItem(item)
+        //repo.removeItem(item)
     }
 
     fun getItem(id: Int) = viewModelScope.launch {
