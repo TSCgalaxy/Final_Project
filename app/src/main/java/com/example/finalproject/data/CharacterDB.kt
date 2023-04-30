@@ -43,7 +43,7 @@ abstract class CharacterDB: RoomDatabase() {
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {
-                db.execSQL("SELECT * FROM item;")
+
             }
         }
 
