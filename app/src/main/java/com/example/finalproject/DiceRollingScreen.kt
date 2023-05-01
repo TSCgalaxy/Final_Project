@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,10 +75,10 @@ fun DiceRollingScreen(
     //Column to add the dice being rolled to
     Column(
         modifier = Modifier
-                .background(
-                        MaterialTheme.colors.background
-                )
-                .fillMaxHeight(),
+            .background(
+                MaterialTheme.colors.background
+            )
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //Scrollable list to display all the dice available to choose from.
@@ -124,13 +125,13 @@ fun DiceRollingScreen(
 fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
                 onDiceChanged: (DiceObject, Boolean) -> Unit = { dice:DiceObject, select: Boolean -> Unit}){
 
-    IconButton(onClick = {onDiceChanged(obj, true)}) {
+    IconButton(onClick = {onDiceChanged(obj, true)}, modifier = Modifier.testTag(obj.dice.faces.size.toString())) {
         Image(
             painter = painterResource(obj.getImage()),
             contentDescription = "Dice",
             modifier = Modifier
-                    .height(80.dp)
-                    .width(80.dp),
+                .height(80.dp)
+                .width(80.dp),
             contentScale = ContentScale.Crop,
             )
     }
@@ -146,7 +147,7 @@ fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -
         ){
         items(rollers) {item ->
             val diceImage by remember { mutableStateOf(item) }
-            IconButton(onClick = { onDiceChanged(item, false)}) {
+            IconButton(onClick = { onDiceChanged(item, false)}, modifier = Modifier.testTag(item.dice.faces.size.toString())) {
                 Image(
                     painter = painterResource(diceImage.currentImage),
                     contentDescription = "Dice",
@@ -200,7 +201,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
     ) {
         Box(
                 Modifier
-                        .size(300.dp, (25 * rollers.size).dp)
+                        .size(300.dp, (40 * rollers.size).dp)
                         .padding(top = 5.dp)
                         .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
                         .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
@@ -209,15 +210,16 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                 if (d4Total > 0)
                 {
                     Text(
-                            text = "4 Sided Total: " + d4Total.toString(),
+                            text = " 4 Sided Total: " + d4Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(start = 15.dp)
                     )
                 }
                 if (d6Total > 0)
                 {
                     Text(
-                            text = "6 Sided Total: " + d6Total.toString(),
+                            text = " 6 Sided Total: " + d6Total.toString(),
                             style = MaterialTheme.typography.h1,
                             fontSize = 20.sp,
                             modifier = Modifier.padding(start = 15.dp)
@@ -226,33 +228,37 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                 if (d8Total > 0)
                 {
                     Text(
-                            text = "8 Sided Total: " + d8Total.toString(),
+                            text = " 8 Sided Total: " + d8Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding(start = 15.dp)
                     )
                 }
                 if (d10Total > 0)
                 {
                     Text(
-                            text = "10 Sided Total: " + d10Total.toString(),
+                            text = " 10 Sided Total: " + d10Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 15.dp)
                     )
                 }
                 if (d12Total > 0)
                 {
                     Text(
-                            text = "12 Sided Total: " + d12Total.toString(),
+                            text = " 12 Sided Total: " + d12Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 15.dp)
                     )
                 }
                 if (d20Total > 0)
                 {
                     Text(
-                            text = "20 Sided Total: " + d20Total.toString(),
+                            text = " 20 Sided Total: " + d20Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 15.dp)
                     )
                 }
             }
