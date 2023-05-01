@@ -5,4 +5,7 @@ package com.example.finalproject.data
  */
 data class ItemState(
     val items:List<ItemEntity> = emptyList(),
+    val selectedItems: List<ItemEntity> = emptyList(),
+    val item: ItemEntity? = null,
+    val characetr: CharacterEntity? = null,
 )

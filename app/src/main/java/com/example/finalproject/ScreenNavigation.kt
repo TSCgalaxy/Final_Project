@@ -30,7 +30,8 @@ enum class DnDScreen(@StringRes val title: Int, val route: String) {
     HomeScreen(title = R.string.main_screen, route = "home"),
     CharacterScreen(title = R.string.character_creator, route = "character"),
     DiceRoller(title = R.string.dice_roller, route = "dice"),
-    ProfileScreen(title = R.string.profile_screen, route = "profile/{id}")
+    ProfileScreen(title = R.string.profile_screen, route = "profile/{character}"),
+    ItemScreen(title = R.string.item_screen, route = "item/{character}"),
 }
 
 
@@ -118,13 +119,13 @@ fun DndApp(
             }*/
 
             composable(route = DnDScreen.HomeScreen.route) {
-                mainCharacterListScreen(onCharacterButtonClicked = { id ->
-                    navController.navigate(route = "profile/$id")
+                mainCharacterListScreen(onCharacterButtonClicked = { character ->
+                    navController.navigate(route = "profile/$character")
                 }, viewmodel =  CharacterViewModel(repository))
             }
             composable(
                 route = DnDScreen.ProfileScreen.route,
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+                arguments = listOf(navArgument("id") { type = NavType.IntType})
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: 0
                 CharacterProfileScreen(
@@ -132,7 +133,15 @@ fun DndApp(
                     navController = navController
                 )
             }
-
+            composable(
+                route = DnDScreen.ItemScreen.route,
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("character") ?: 0
+                ItemsMenu(
+                    viewModel = ItemMenuViewModel(repository, ),
+                )
+            }
 
 
             composable(route = DnDScreen.CharacterScreen.route) {

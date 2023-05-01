@@ -14,7 +14,7 @@ class RepositoryClass ( val conversionDao: CharacterDao
             = conversionDao.addToInventory(conversion)
     override fun getAllItem(): Flow<List<ItemEntity>>
             = conversionDao.getAllItem()
-    override fun getAllInventory(conversion: CharacterEntity)
+    override suspend fun getAllInventory(conversion: CharacterEntity)
             = conversionDao.getAllFromInventory()
     override suspend fun removeCharacter(player: CharacterEntity)
             = conversionDao.removeCharacter(player)

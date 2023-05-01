@@ -1,7 +1,9 @@
 package com.example.finalproject
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,33 +18,23 @@ import kotlinx.coroutines.launch
  */
 class CharacterProfileViewModel (
     private val repo : RepositoryClass,
-    id: Int
+    character: CharacterEntity,
 ) : ViewModel(){
 
-    var state by mutableStateOf(CharacterState())
+    var state by mutableStateOf(CharacterState(character))
         private set
 
     var isDialogOpen by mutableStateOf(false)
-    var isItemDialogueOpen by mutableStateOf(false)
+
+    val items = repo.getAllItem()
+
+
 
     init {
-        getCharacterById(id)
-        getInventory(id)
-        //getItems()
+        getCharacterById(character.id)
+        getInventory(character.id)
     }
 
-    /**
-     * Get all the characters from the DB
-     */
-    fun getCharacter(){
-        viewModelScope.launch {
-            repo.getAllCharacters().collectLatest {
-                state = state.copy(
-                    characters = it
-                )
-            }
-        }
-    }
 
     /**
      * Get a character by id
@@ -110,18 +102,6 @@ class CharacterProfileViewModel (
         repo.removeItem(item)
     }
 
-    /**
-     * Get all items from the DB
-     */
-    fun getItems(){
-        viewModelScope.launch {
-            repo.getAllItem().collectLatest {
-                state = state.copy(
-                    items = it
-                )
-            }
-        }
-    }
 
     /**
      * Function to open the dialog
@@ -137,19 +117,6 @@ class CharacterProfileViewModel (
         isDialogOpen = false
     }
 
-    /**
-     * Function to open the Add Item dialog
-     */
-    fun openItemDialog() {
-        isItemDialogueOpen = true
-    }
-
-    /**
-     * Function to close the Add Item dialog
-     */
-    fun closeItemDialog() {
-        isItemDialogueOpen = false
-    }
 
     /**
      * Update a character in the DB

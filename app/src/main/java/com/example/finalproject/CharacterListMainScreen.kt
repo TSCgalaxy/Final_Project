@@ -34,7 +34,7 @@ class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
 @Composable
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
-    onCharacterButtonClicked: (Int) -> Unit,
+    onCharacterButtonClicked: (CharacterEntity) -> Unit,
     viewmodel : CharacterViewModel
 ){
     val NPCs by viewmodel.conversionUIModel.collectAsState()
@@ -47,15 +47,14 @@ fun mainCharacterListScreen(
                 item {
 
                     var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
-                    Button(onClick = { onCharacterButtonClicked(x.id) },) {
+                    Button(onClick = { onCharacterButtonClicked(x) }) {
                         CharacterItem(info = info)
                     }
                 }
             }
             items(characterList) {
-                Button(onClick = { onCharacterButtonClicked(it.id) },) {
+                Button(onClick = {}) {
                     CharacterItem(info = it)
-
                 }
             }
         }

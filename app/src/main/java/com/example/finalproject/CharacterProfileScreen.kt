@@ -1,13 +1,10 @@
 package com.example.finalproject
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -42,7 +39,6 @@ fun CharacterProfileScreen(
 ) {
     val characterState = characterViewModel.state
 
-    //Box(modifier = modifier.fillMaxWidth()) {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = modifier
@@ -88,18 +84,11 @@ fun CharacterProfileScreen(
         )
 
         Text(text = "Inventory", style = MaterialTheme.typography.h4)
-        //InventoryDisplay
         InventoryDisplay(
             modifier = modifier,
             viewModel = characterViewModel,
+            navController = navController
         )
-
-        if (characterViewModel.isItemDialogueOpen) {
-            AddItemUI(
-                onDismiss = { characterViewModel.closeItemDialog() },
-                addItem = { item -> characterViewModel.addItem(item) }
-            )
-        }
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
@@ -190,82 +179,6 @@ fun CustomDialogue(
 }
 
 /**
- * a custom dialogue that allows the user to add an item to their inventory
- * @param onDismiss function to dismiss the dialogue
- * @param modifier modifier for the dialogue
- * @param addItem function to add the item to the view model
- */
-@Composable
-fun AddItemUI(
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    addItem: (item: ItemEntity) -> Unit,
-) {
-    var name by remember { mutableStateOf("") }
-    var level by remember { mutableStateOf("") }
-
-    Dialog(onDismissRequest = { onDismiss() }) {
-        Card(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            backgroundColor = MaterialTheme.colors.background
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            )
-            {
-                Text(
-                    text = "Add new Item",
-                    style = MaterialTheme.typography.h6
-                )
-
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text(text = "Name") },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Text
-
-                    )
-                )
-                TextField(
-                    value = level,
-                    onValueChange = { level = it },
-                    label = { Text(text = "Level") },
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Number
-
-                    )
-                )
-
-                Button(
-                    onClick = {
-                        onDismiss()
-                        val item = ItemEntity(name = name, level = level)
-                        addItem(item)
-                    }
-                ) {
-                    Text(text = "Add", style = MaterialTheme.typography.h6)
-                }
-
-            }
-
-        }
-    }
-
-}
-
-/**
  * a composable that displays the stats of a character
  * @param viewModel the view model to get the stats from
  * @param modifier modifier for the composable
@@ -303,16 +216,18 @@ fun StatsDisplay(
 fun InventoryDisplay(
     modifier: Modifier = Modifier,
     viewModel: CharacterProfileViewModel,
+    navController: NavController
 ) {
     val itemState = viewModel.state
-
+    val id = viewModel.state.character?.id ?: 0
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { navController.navigate("item/$id") }
         ) {
-            IconButton(onClick = { viewModel.openItemDialog() }) {
+            IconButton(onClick = { navController.navigate("item/$id") }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = null,
@@ -320,7 +235,10 @@ fun InventoryDisplay(
                     tint = Color.Green
                 )
             }
-            Text(text = "Add", style = MaterialTheme.typography.h5)
+            Text(
+                text = "Add",
+                style = MaterialTheme.typography.h5,
+            )
         }
         itemState.items.forEach { item ->
             Row(
