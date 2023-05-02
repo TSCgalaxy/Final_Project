@@ -34,6 +34,12 @@ class RepositoryClass ( val conversionDao: CharacterDao
 
     suspend fun addInventory(inventoryEntity: InventoryEntity)
             = conversionDao.addInventory(inventoryEntity)
+
+    override fun  retrieveCharacter(id: Int): CharacterEntity?
+            = conversionDao.getCharacter(id)
+
+     override fun retrieveInventory(id: Int): Flow<List<InventoryEntity>> =
+        conversionDao.getInventoryById(id)
     //
     companion object {
         private var repository: KotlinRepositoryInterface? = null

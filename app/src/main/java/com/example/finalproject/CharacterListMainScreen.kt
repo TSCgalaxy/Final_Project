@@ -3,6 +3,7 @@ package com.example.finalproject
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -34,7 +35,7 @@ class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
 @Composable
 fun mainCharacterListScreen(
     modifier: Modifier = Modifier,
-    onCharacterButtonClicked: (CharacterEntity) -> Unit,
+    onCharacterButtonClicked: (Int) -> Unit,
     viewmodel : CharacterViewModel
 ){
     val NPCs by viewmodel.conversionUIModel.collectAsState()
@@ -47,13 +48,15 @@ fun mainCharacterListScreen(
                 item {
 
                     var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
-                    Button(onClick = { onCharacterButtonClicked(x) }) {
+                    Button(onClick = {
+                        onCharacterButtonClicked(x.id)
+                    }) {
                         CharacterItem(info = info)
                     }
                 }
             }
             items(characterList) {
-                Button(onClick = {}) {
+                Button(onClick = {onCharacterButtonClicked(it.id)}) {
                     CharacterItem(info = it)
                 }
             }

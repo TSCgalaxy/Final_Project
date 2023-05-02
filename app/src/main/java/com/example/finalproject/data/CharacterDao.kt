@@ -47,4 +47,10 @@ interface CharacterDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addInventory(inventoryEntity: InventoryEntity)
+
+    @Query("SELECT * FROM tableplayer WHERE id = :id")
+    fun getCharacter(id: Int): CharacterEntity?
+
+    @Query("SELECT * FROM inventory WHERE characterID = :id")
+    fun getInventoryById(id: Int): Flow<List<InventoryEntity>>
 }

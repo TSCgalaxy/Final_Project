@@ -1,5 +1,6 @@
 package com.example.finalproject
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,20 +11,54 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ItemMenuViewModel(
-    private val repo : RepositoryClass,
-    character: CharacterEntity
+    private val repo: RepositoryClass,
+    id: Int
 ) : ViewModel() {
 
+    val characterId = id
+    val selectedItems = mutableSetOf<Int>()
 
     var state by mutableStateOf(ItemState())
         private set
 
-    var characterState by mutableStateOf(CharacterState(character))
-        private set
 
     init {
         getAllItems()
+        getInventory(characterId)
     }
+
+    fun getInventory(id: Int) {
+        viewModelScope.launch {
+            repo.retrieveInventory(id).collectLatest {
+                state = state.copy(
+                    inventory = it
+                )
+            }
+        }
+    }
+
+    fun addSelectedItems(item: ItemEntity) {
+        state = state.copy(
+            selectedItems = state.selectedItems + item
+        )
+        viewModelScope.launch {
+            addInventory(InventoryEntity(characterId, item.id))
+
+        }
+        for (i in state.selectedItems) {
+            Log.d("ItemMenuViewModel", " ${i.name}")
+        }
+    }
+
+    fun removeSelectedItems(item: ItemEntity) {
+        state = state.copy(
+            selectedItems = state.selectedItems - item
+        )
+        viewModelScope.launch {
+            repo.removeInventory(InventoryEntity(characterId, item.id))
+        }
+    }
+
 
     /**
      * Get all the characters from the DB
@@ -39,15 +74,6 @@ class ItemMenuViewModel(
 
     }
 
-    /**
-     * Delete an item from the DB
-     * @param item the item to delete
-     */
-    fun deleteItem(item: ItemEntity) {
-        viewModelScope.launch {
-            repo.removeItem(item)
-        }
-    }
 
     /**
      * Add Inventory to the DB
@@ -56,21 +82,6 @@ class ItemMenuViewModel(
     fun addInventory(inventory: InventoryEntity) = viewModelScope.launch {
         repo.insertInventory(inventory)
     }
-
-    /**
-     * Add an item to the DB
-     * @param item the item to add
-     */
-    fun addItem(item: ItemEntity) = viewModelScope.launch {
-        repo.insertItem(item)
-        addInventory(InventoryEntity(characterState.character!!.id, item.id))
-
-    }
-
-
-
-
-
 
 }
 

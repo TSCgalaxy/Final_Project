@@ -24,9 +24,12 @@ fun ItemsMenu(
     modifier: Modifier = Modifier,
     viewModel: ItemMenuViewModel,
 
-) {
+    ) {
     val itemState = viewModel.state
-    val selectedItems = rememberSaveable { mutableSetOf<Int>() }
+    val selectedItems = viewModel.selectedItems
+    val inventory = itemState.inventory
+    inventory.forEach { selectedItems.add(it.itemID) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -40,16 +43,19 @@ fun ItemsMenu(
                 .fillMaxSize()
         ) {
             items(itemState.items.size) { i ->
-                val isSelected = rememberSaveable(i) { mutableStateOf(false) }
+
+                val isSelected =
+                    remember { mutableStateOf(selectedItems.contains(itemState.items[i].id)) }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
                             isSelected.value = !isSelected.value
                             if (isSelected.value) {
-                                selectedItems.add(i)
+                                viewModel.addSelectedItems(itemState.items[i])
                             } else {
-                                selectedItems.remove(i)
+                                viewModel.removeSelectedItems(itemState.items[i])
                             }
                         }
                         .padding(16.dp),
@@ -73,7 +79,7 @@ fun ItemsMenu(
                             tint = Color.Green,
                             modifier = modifier.size(24.dp)
                         )
-                        //viewModel1.addItem(ItemEntity(itemState.items[i].id, itemState.items[i].name, itemState.items[i].level))
+                        //viewModel.addItem(selected)
                     }
 
                 }
@@ -82,6 +88,6 @@ fun ItemsMenu(
 
             }
         }
-        Log.d("Selected Set", selectedItems.toString())
+
     }
 }

@@ -1,6 +1,7 @@
 package com.example.finalproject
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
@@ -24,14 +25,15 @@ import com.example.finalproject.data.*
 import kotlinx.coroutines.launch
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import kotlinx.coroutines.flow.firstOrNull
 
 
 enum class DnDScreen(@StringRes val title: Int, val route: String) {
     HomeScreen(title = R.string.main_screen, route = "home"),
     CharacterScreen(title = R.string.character_creator, route = "character"),
     DiceRoller(title = R.string.dice_roller, route = "dice"),
-    ProfileScreen(title = R.string.profile_screen, route = "profile/{character}"),
-    ItemScreen(title = R.string.item_screen, route = "item/{character}"),
+    ProfileScreen(title = R.string.profile_screen, route = "profile/{id}"),
+    ItemScreen(title = R.string.item_screen, route = "item/{id}"),
 }
 
 
@@ -114,20 +116,18 @@ fun DndApp(
             startDestination = DnDScreen.HomeScreen.route,
             modifier = modifier.padding(innerPadding)
         ) {
-            /*composable(route = DnDScreen.HomeScreen.name) {
-                mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
-            }*/
-
             composable(route = DnDScreen.HomeScreen.route) {
-                mainCharacterListScreen(onCharacterButtonClicked = { character ->
-                    navController.navigate(route = "profile/$character")
-                }, viewmodel =  CharacterViewModel(repository))
+                mainCharacterListScreen(onCharacterButtonClicked = { id ->
+                    navController.navigate(route = "profile/$id")
+                    Log.d("CharListScreenNav", "id: $id")
+                }, viewmodel = CharacterViewModel(repository))
             }
             composable(
                 route = DnDScreen.ProfileScreen.route,
-                arguments = listOf(navArgument("id") { type = NavType.IntType})
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: 0
+                Log.d("CharProfScreenNav", "id: $id")
                 CharacterProfileScreen(
                     characterViewModel = CharacterProfileViewModel(repository, id),
                     navController = navController
@@ -137,9 +137,9 @@ fun DndApp(
                 route = DnDScreen.ItemScreen.route,
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
-                val id = backStackEntry.arguments?.getInt("character") ?: 0
+                val id = backStackEntry.arguments?.getInt("id") ?: 0
                 ItemsMenu(
-                    viewModel = ItemMenuViewModel(repository, ),
+                    viewModel = ItemMenuViewModel(repository, id),
                 )
             }
 
