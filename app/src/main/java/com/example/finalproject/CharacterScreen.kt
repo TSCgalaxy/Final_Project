@@ -1,15 +1,13 @@
 package com.example.finalproject
 
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -20,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -27,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,10 +48,11 @@ fun TextFieldColorOverride(
 )
 
 @Composable
-fun CharacterDropdown (items: Array<String>,
+fun CharacterDropdown (items: List<Pair<String, Int>>,
                        @StringRes placeholder: Int,
                        @StringRes label: Int,
-                       modifyStateCallback: (Any) -> Unit = {}) {
+                       modifyStateCallback: (Any) -> Unit = {},
+                       showImage: Boolean = false) {
     var isExpanded by remember { mutableStateOf(false) }
     var currentSelectedText by remember { mutableStateOf("") }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -73,7 +74,7 @@ fun CharacterDropdown (items: Array<String>,
         value = currentSelectedText,
         onValueChange = {/* currentSelectedText = it */ },
         placeholder = { Text(text = stringResource(id = placeholder)) },
-        label = { Text(text = stringResource(id = label), color = Color.Black)
+        label = { Text(text = stringResource(id = label), color = Color.White)
         },
         //Resize according to the state of the textFieldSize
         modifier = Modifier
@@ -92,22 +93,88 @@ fun CharacterDropdown (items: Array<String>,
     DropdownMenu(
         expanded = isExpanded,
         onDismissRequest = {isExpanded = false},
-        modifier = Modifier.width(
-            with(LocalDensity.current) {
-                textFieldSize.width.toDp()
-            }
-        ).background(Color.DarkGray)
+        modifier = Modifier
+            .width(
+                with(LocalDensity.current) {
+                    textFieldSize.width.toDp()
+                }
+            )
+            .background(Color.DarkGray)
     ) {
         // Load in all the items.
         items.forEach {
-            label ->
             DropdownMenuItem(onClick = {
-                currentSelectedText = label
+                currentSelectedText = it.first
                 modifyStateCallback(label)
                 isExpanded = false }
             ) {
                 //label
-                Text(text = label)
+                Text(text = it.first)
+                // Display image if one is supplied
+                if (showImage) {
+                    //Picture
+                    Image(painter = painterResource(it.second),
+                        contentDescription = null,
+                        modifier = Modifier.height(48.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ImageSelector (items: List<Pair<String, Int>>,
+                       @StringRes placeholder: Int,
+                       @StringRes label: Int,
+                       modifyStateCallback: (Any) -> Unit = {},
+                   viewModel: CreateCharViewModel,
+                       showImage: Boolean = true) {
+    var isExpanded by remember { mutableStateOf(false) }
+    var currentSelectedImage by remember { mutableStateOf(R.drawable.dice) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    //Color override
+    val colors: TextFieldColors = TextFieldColorOverride()
+
+    //Create Text Field
+    Image(painter = painterResource(viewModel.getImage()),
+        contentDescription = null,
+        modifier = Modifier.height(64.dp)
+            .clip(CircleShape).fillMaxWidth()
+            .onGloballyPositioned { coords ->
+                textFieldSize = coords.size.toSize()
+            }
+            .clickable { isExpanded = !isExpanded },
+    )
+
+    //The dropdown menu itself
+    DropdownMenu(
+        expanded = isExpanded,
+        onDismissRequest = {isExpanded = false},
+        modifier = Modifier
+            .width(
+                with(LocalDensity.current) {
+                    textFieldSize.width.toDp()
+                }
+            )
+            .background(Color.DarkGray)
+    ) {
+        // Load in all the items.
+        items.forEach {
+            DropdownMenuItem(onClick = {
+                currentSelectedImage = it.second
+                modifyStateCallback(it.second)
+                isExpanded = false }
+            ) {
+                //label
+                Text(text = it.first)
+                // Display image if one is supplied
+                if (showImage) {
+                    //Picture
+                    Image(painter = painterResource(it.second),
+                        contentDescription = null,
+                        modifier = Modifier.height(48.dp))
+                }
             }
         }
     }
@@ -247,12 +314,6 @@ fun CharacterScreen(
     var insertSuccessToast = Toast.makeText(LocalContext.current, "Character Added!",
         Toast.LENGTH_SHORT)
 
-    // Image Picker stuff
-    //Launcher
-    var pickIntentLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(), onResult = {
-        viewModel.setImageUri(it ?: Uri.EMPTY)
-    })
-
     //Main Body
     LazyColumn() {
     item {
@@ -263,15 +324,21 @@ fun CharacterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             //Title
             Text(text = title, fontSize = 24.sp)
 
-            // Select Image Button
-            Button(onClick = {
-                //Get Image
-                pickIntentLauncher.launch("image/*")
-            }) {Text(text="Add Image")}
+            Column(Modifier.padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                // PUT IMAGE SELECTOR HERE
+                ImageSelector(
+                    items = pfp,
+                    placeholder = R.string.placeholder_select_image,
+                    label = R.string.placeholder_select_image,
+                    viewModel = viewModel,
+                    showImage = true,
+                    modifyStateCallback = { viewModel.setImage(it as Int) }
+                )
+            }
 
             //Name
             CharacterTextField(
@@ -362,8 +429,6 @@ fun CharacterScreen(
         }
     }
 }
-
-
 
 @Composable
 fun CharacterLvlXP(setLvl: (Int) -> Unit,
