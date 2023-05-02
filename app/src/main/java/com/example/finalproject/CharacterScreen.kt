@@ -409,6 +409,7 @@ fun CharacterScreen(
                                 attInt = viewModel.getInt(),
                                 race = viewModel.getRace(),
                                 charClass = viewModel.getClass(),
+                                image = viewModel.getImage()
                             )
                         )
                     }

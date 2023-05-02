@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
  * The character has various attributes and possesses an inventory of items.
  */
 @Database(
-    entities = [(CharacterEntity::class), (ItemEntity::class), (InventoryEntity::class)], version = 5, exportSchema = false)
+    entities = [(CharacterEntity::class), (ItemEntity::class), (InventoryEntity::class)], version = 6, exportSchema = false)
 
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
