@@ -51,6 +51,10 @@ class CharacterEntity (
     @ColumnInfo(name = "attCon")
     val attCon: Int,
 
+    // image id
+    @ColumnInfo(name = "image")
+    val image: Int,
+
     @ColumnInfo(name = "race")
     val race: String,
 

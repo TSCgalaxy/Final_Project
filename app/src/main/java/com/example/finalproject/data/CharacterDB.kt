@@ -2,6 +2,7 @@ package com.example.finalproject.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.room.Database
 import androidx.room.OnConflictStrategy
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
  * The character has various attributes and possesses an inventory of items.
  */
 @Database(
-    entities = [(CharacterEntity::class), (ItemEntity::class), (InventoryEntity::class)], version = 3, exportSchema = false)
+    entities = [(CharacterEntity::class), (ItemEntity::class), (InventoryEntity::class)], version = 6, exportSchema = false)
 
 abstract class CharacterDB: RoomDatabase() {
     // Data Access Object
@@ -27,6 +28,7 @@ abstract class CharacterDB: RoomDatabase() {
         // Get Singleton instance of the database
         var rdc: Callback = object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
+                Log.d("DB", "insert")
                 db.execSQL("INSERT INTO item VALUES(0, \"Dagger\", \"1 d 4\");")
                 db.execSQL("INSERT INTO item VALUES(1, \"Staff\", \"1 d 6\");")
                 db.execSQL("INSERT INTO item VALUES(2, \"Food\", \"1 unit of food ration\");")
@@ -43,21 +45,22 @@ abstract class CharacterDB: RoomDatabase() {
             }
 
             override fun onOpen(db: SupportSQLiteDatabase) {
-                db.execSQL("SELECT * FROM item;")
+                Log.d("DB", "Open")
             }
         }
 
         fun getInstance(context: Context): CharacterDB {
+            Log.d("DB", "$instance")
             if (instance == null) {
                 instance = Room.databaseBuilder(
                     context = context,
                     klass = CharacterDB::class.java,
                     name = "character_db"
-                ).fallbackToDestructiveMigration()
-                    .addCallback(rdc)
+                ).addCallback(rdc)
                     .build()
             }
             //Return the DB instance
+            Log.d("DB", "Returning")
             return instance as CharacterDB
         }
     }

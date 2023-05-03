@@ -23,7 +23,7 @@ data class CharacterUIState(
     val attrIntelligence: Int = 0,
     val attrCharisma: Int = 0,
     val description: String = "",
-    val image: Uri = Uri.EMPTY
+    val image: Int = R.drawable.dice
 
 )
 class CreateCharViewModel(context: Context): ViewModel() {
@@ -258,13 +258,13 @@ class CreateCharViewModel(context: Context): ViewModel() {
         }
     }
 
-    fun setImageUri(value:  Uri) {
+    fun setImage(value:  Int) {
         _uiState.update { currentState ->
             currentState.copy(image = value)
         }
     }
 
-    fun getImageUri(): Uri {
+    fun getImage(): Int {
         return _uiState.value.image
     }
 }
