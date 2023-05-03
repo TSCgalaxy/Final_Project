@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
+import androidx.compose.material.Button
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -78,6 +79,7 @@ fun DndApp(
     viewModel: DiceViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+
     /*val backStackEntry by navController.currentBackStackEntryAsState()
     //Get the current screen for the user
     val currentScreen = DnDScreen.valueOf(
