@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,16 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.finalproject.data.*
-import kotlinx.coroutines.launch
 import java.util.*
-
 class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
 
 }
@@ -37,6 +32,7 @@ fun mainCharacterListScreen(
     onCharacterButtonClicked: (Int) -> Unit,
     viewmodel : CharacterViewModel
 ){
+
     val NPCs by viewmodel.conversionUIModel.collectAsState()
     Scaffold(
         bottomBar  = {}
@@ -45,7 +41,6 @@ fun mainCharacterListScreen(
         LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
             for (x in NPCs.subs) {
                 item {
-
                     var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
                     Button(onClick = { onCharacterButtonClicked(x.id) },) {
                         CharacterItem(info = info)
@@ -53,9 +48,12 @@ fun mainCharacterListScreen(
                 }
             }
             items(characterList) {
-                Button(onClick = { onCharacterButtonClicked(it.id) },) {
-                    CharacterItem(info = it)
-
+                var test by rememberSaveable { mutableStateOf(false)}
+                Button(onClick = { test = true },){
+                    "test"
+                    if(test){
+                        test2()
+                    }
                 }
             }
         }
@@ -72,7 +70,8 @@ fun mainCharacterListScreen(
 fun CharacterItem(info: CharacterInfo, modifier: Modifier = Modifier) {
     Card(
         elevation = 4.dp,
-        modifier = modifier.padding(1.dp)
+        modifier = modifier
+            .padding(1.dp)
             .clip(RoundedCornerShape(50))
     ) {
         Row(
