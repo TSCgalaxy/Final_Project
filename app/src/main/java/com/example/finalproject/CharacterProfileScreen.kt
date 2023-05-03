@@ -60,7 +60,7 @@ fun CharacterProfileScreen(
             Text(text = "${characterState.character?.name}", style = MaterialTheme.typography.h4)
         }
         Text(
-            text = "Level: ",
+            text = "Level: {$characterState.character?.level}}",
             style = MaterialTheme.typography.h4
         )
         OutlinedButton(
