@@ -51,7 +51,8 @@ fun DndAppBar(
             }) {
                 Image(
                     painter = painterResource(R.drawable.addcharacter),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.testTag("add_character")
                 )
             }
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
@@ -93,8 +94,6 @@ fun DndApp(
             navBackStackEntry?.destination?.route == screen.route
         } ?: DnDScreen.HomeScreen
     }
-
-
 
     Scaffold(
         bottomBar = {

@@ -56,8 +56,8 @@ class CharacterEntity (
     val image: Int,
 
     @ColumnInfo(name = "race")
-    val race: String,
+    val race: Int,
 
     @ColumnInfo(name = "charClass")
-    val charClass: String,
+    val charClass: Int,
 )
