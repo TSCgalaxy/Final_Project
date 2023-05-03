@@ -1,10 +1,10 @@
 package com.example.finalproject
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -16,14 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
-import com.example.finalproject.data.ItemEntity
+
 
 
 /**
@@ -37,7 +35,8 @@ fun CharacterProfileScreen(
     characterViewModel: CharacterProfileViewModel,
     navController: NavController,
 ) {
-    val characterState = characterViewModel.state
+    val characterState = characterViewModel.state.collectAsState()
+    Log.d("charState", "${characterState.value.character}")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -57,10 +56,15 @@ fun CharacterProfileScreen(
                     .size(140.dp)
             )
             Spacer(modifier = modifier.width(30.dp))
-            Text(text = "${characterState.character?.name}", style = MaterialTheme.typography.h4)
+            Column {
+                Text(text = "${characterState.value.character?.name}", style = MaterialTheme.typography.h4)
+                Text(text = "Race: ${characterState.value.character?.race}", style = MaterialTheme.typography.h5)
+                Text(text = "Class: ${characterState.value.character?.charClass}", style = MaterialTheme.typography.h5)
+            }
+
         }
         Text(
-            text = "Level: {$characterState.character?.level}}",
+            text = "Level: ${characterState.value.character?.level}",
             style = MaterialTheme.typography.h4
         )
         OutlinedButton(
@@ -92,7 +96,7 @@ fun CharacterProfileScreen(
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
-                characterState.character?.let { characterViewModel.deleteCharacter(character = it) }
+                characterState.value.character?.let { characterViewModel.deleteCharacter(character = it) }
                 navController.popBackStack()
             },
             modifier = modifier
@@ -119,6 +123,7 @@ fun CustomDialogue(
     onDismiss: () -> Unit,
     viewModel: CharacterProfileViewModel
 ) {
+    var vm = viewModel.state.collectAsState()
     Dialog(
         onDismissRequest = {
             onDismiss()
@@ -134,7 +139,7 @@ fun CustomDialogue(
         ) {
             Column {
                 Text(
-                    text = "Current HP = ${viewModel.state.character?.currentHP}",
+                    text = "Current HP = ${vm.value.character?.currentHP}",
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -146,7 +151,7 @@ fun CustomDialogue(
                 ) {
                     Button(
                         onClick = {
-                            viewModel.state.character?.let { viewModel.healCharacter(it) }
+                            viewModel.state.value.character?.let { viewModel.healCharacter(it) }
                             onDismiss()
                         },
                         shape = RoundedCornerShape(16.dp),
@@ -160,7 +165,7 @@ fun CustomDialogue(
 
                     Button(
                         onClick = {
-                            viewModel.state.character?.let { viewModel.damageCharacter(it) }
+                            viewModel.state.value.character?.let { viewModel.damageCharacter(it) }
                             onDismiss()
                         },
                         shape = RoundedCornerShape(16.dp),
@@ -188,21 +193,21 @@ fun StatsDisplay(
     modifier: Modifier = Modifier,
     viewModel: CharacterProfileViewModel
 ) {
-    val characterState = viewModel.state
+    val characterState = viewModel.state.collectAsState()
     Column(
         modifier = modifier
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Strength: ${characterState.character?.attStr}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
-            Text(text = "Charisma: ${characterState.character?.attChr}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Strength: ${characterState.value.character?.attStr}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Charisma: ${characterState.value.character?.attChr}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Wisdom: ${characterState.character?.attWis}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
-            Text(text = "Detrexity: ${characterState.character?.attDex}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Wisdom: ${characterState.value.character?.attWis}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Dexterity: ${characterState.value.character?.attDex}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Constitution: ${characterState.character?.attCon}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
-            Text(text = "Int: ${characterState.character?.attInt}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Constitution: ${characterState.value.character?.attCon}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
+            Text(text = "Int: ${characterState.value.character?.attInt}", modifier = Modifier.weight(1f), style = MaterialTheme.typography.h6)
         }
     }
 }
@@ -218,8 +223,8 @@ fun InventoryDisplay(
     viewModel: CharacterProfileViewModel,
     navController: NavController
 ) {
-    val itemState = viewModel.state
-    val id = viewModel.state.character?.id ?: 0
+    val itemState = viewModel.state.collectAsState()
+    val id = viewModel.state.value.character?.id ?: 0
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -240,7 +245,7 @@ fun InventoryDisplay(
                 style = MaterialTheme.typography.h5,
             )
         }
-        itemState.items.forEach { item ->
+        itemState.value.items.forEach { item ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier

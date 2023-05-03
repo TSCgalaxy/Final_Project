@@ -27,7 +27,9 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import kotlinx.coroutines.flow.firstOrNull
 
-
+/**
+ * Enum class that will hold all the screens in the app.
+ */
 enum class DnDScreen(@StringRes val title: Int, val route: String) {
     HomeScreen(title = R.string.main_screen, route = "home"),
     CharacterScreen(title = R.string.character_creator, route = "character"),
@@ -36,7 +38,12 @@ enum class DnDScreen(@StringRes val title: Int, val route: String) {
     ItemScreen(title = R.string.item_screen, route = "item/{id}"),
 }
 
-
+/**
+ * Composable that will add the app bar to the app.
+ * @param navController: NavController that will handle the navigation
+ * @param startDestination: The start destination of the app
+ * @param modifier: Modifier to apply to the composable
+ */
 @Composable
 fun DndAppBar(
     currentScreen: DnDScreen,
@@ -81,19 +88,12 @@ fun DndApp(
     viewModel: DiceViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    /*val backStackEntry by navController.currentBackStackEntryAsState()
-    //Get the current screen for the user
-    val currentScreen = DnDScreen.valueOf(
-        backStackEntry?.destination?.route ?: DnDScreen.HomeScreen.route
-    )*/
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = remember(navBackStackEntry) {
         DnDScreen.values().firstOrNull { screen ->
             navBackStackEntry?.destination?.route == screen.route
         } ?: DnDScreen.HomeScreen
     }
-
-
 
     Scaffold(
         bottomBar = {
@@ -142,8 +142,6 @@ fun DndApp(
                     viewModel = ItemMenuViewModel(repository, id),
                 )
             }
-
-
             composable(route = DnDScreen.CharacterScreen.route) {
                 CharacterScreen(title = "Create a Character", repo = repository, onGoBack = {
                     navController.navigate(DnDScreen.HomeScreen.route)

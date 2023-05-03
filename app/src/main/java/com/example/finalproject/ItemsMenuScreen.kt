@@ -1,6 +1,6 @@
 package com.example.finalproject
 
-import android.util.Log
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,23 +11,27 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.finalproject.data.ItemEntity
 
+
+/**
+ * This is the items menu screen
+ * @param modifier Modifier to set to this composable
+ * @param viewModel The view model to get the character data
+ */
 @Composable
 fun ItemsMenu(
     modifier: Modifier = Modifier,
     viewModel: ItemMenuViewModel,
 
     ) {
-    val itemState = viewModel.state
+    val itemState = viewModel.state.collectAsState()
     val selectedItems = viewModel.selectedItems
-    val inventory = itemState.inventory
+    val inventory = itemState.value.inventory
     inventory.forEach { selectedItems.add(it.itemID) }
 
     Column(
@@ -42,10 +46,10 @@ fun ItemsMenu(
             modifier = modifier
                 .fillMaxSize()
         ) {
-            items(itemState.items.size) { i ->
+            items(itemState.value.items.size) { i ->
 
                 val isSelected =
-                    remember { mutableStateOf(selectedItems.contains(itemState.items[i].id)) }
+                    remember { mutableStateOf(selectedItems.contains(itemState.value.items[i].id)) }
 
                 Row(
                     modifier = Modifier
@@ -53,9 +57,9 @@ fun ItemsMenu(
                         .clickable {
                             isSelected.value = !isSelected.value
                             if (isSelected.value) {
-                                viewModel.addSelectedItems(itemState.items[i])
+                                viewModel.addSelectedItems(itemState.value.items[i])
                             } else {
-                                viewModel.removeSelectedItems(itemState.items[i])
+                                viewModel.removeSelectedItems(itemState.value.items[i])
                             }
                         }
                         .padding(16.dp),
@@ -64,11 +68,11 @@ fun ItemsMenu(
                 ) {
                     Column {
                         Text(
-                            text = itemState.items[i].name,
+                            text = itemState.value.items[i].name,
                             style = MaterialTheme.typography.h5,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(text = " ${itemState.items[i].level}")
+                        Text(text = " ${itemState.value.items[i].level}")
                     }
 
 

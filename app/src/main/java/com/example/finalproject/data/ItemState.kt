@@ -8,5 +8,4 @@ data class ItemState(
     val selectedItems: List<ItemEntity> = emptyList(),
     val inventory: List<InventoryEntity> = emptyList(),
     val item: ItemEntity? = null,
-    val characeter: CharacterEntity? = null,
 )
