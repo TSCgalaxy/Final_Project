@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,7 +58,8 @@ fun DndAppBar(
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
             IconButton(onClick = {
                 navController.navigate(DnDScreen.DiceRoller.route)
-            }) {
+            },
+            modifier = Modifier.testTag("dice")) {
                 Image(
                     painter = painterResource(R.drawable.dice),
                     contentDescription = null
