@@ -11,6 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,7 +50,8 @@ fun DndAppBar(
             }) {
                 Image(
                     painter = painterResource(R.drawable.addcharacter),
-                    contentDescription = null
+                    contentDescription = null,
+                    modifier = Modifier.testTag("add_character")
                 )
             }
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
@@ -89,8 +91,6 @@ fun DndApp(
             navBackStackEntry?.destination?.route == screen.route
         } ?: DnDScreen.HomeScreen
     }
-
-
 
     Scaffold(
         bottomBar = {
