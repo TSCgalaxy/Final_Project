@@ -32,18 +32,18 @@ data class DiceObject(
         return imageResource
     }
 
-    fun image4dice(roll:Int): Int {
+    private fun image4dice(roll:Int): Int {
         val imageDisplay:Int = when (roll) {
-            1 -> R.drawable.dice_1
-            2 -> R.drawable.dice_2
-            3 -> R.drawable.dice_3
-            else -> R.drawable.dice_4
+            1 -> R.drawable.d4_1
+            2 -> R.drawable.d4_2
+            3 -> R.drawable.d4_3
+            else -> R.drawable.d4_4
         }
 
         return imageDisplay
     }
 
-    fun image6dice(roll:Int): Int {
+    private fun image6dice(roll:Int): Int {
         val imageDisplay:Int = when (roll) {
             1 ->  R.drawable.d6_1
             2 ->  R.drawable.d6_2
@@ -56,7 +56,7 @@ data class DiceObject(
         return imageDisplay
     }
 
-    fun image8dice (roll:Int): Int {
+    private fun image8dice (roll:Int): Int {
         val imageDisplay:Int = when (roll) {
             1 ->  R.drawable.d8_1
             2 ->  R.drawable.d8_2
@@ -71,15 +71,27 @@ data class DiceObject(
         return imageDisplay
     }
 
-    fun image10dice (roll:Int): Int {
-        return  R.drawable.dice_1
+    private fun image10dice (roll:Int): Int {
+        val imageDisplay:Int = when (roll) {
+            1 ->  R.drawable.d10_1
+            2 ->  R.drawable.d10_2
+            3 ->  R.drawable.d10_3
+            4 ->  R.drawable.d10_4
+            5 ->  R.drawable.d10_5
+            6 ->  R.drawable.d10_6
+            7 ->  R.drawable.d10_7
+            8 ->  R.drawable.d10_8
+            9 ->  R.drawable.d10_9
+            else -> R.drawable.d10_10
+        }
+        return  imageDisplay
     }
 
-    fun image12dice (roll:Int): Int {
+    private fun image12dice (roll:Int): Int {
         return R.drawable.dice_1
     }
 
-    fun image20dice (roll:Int): Int {
+    private fun image20dice (roll:Int): Int {
         val imageDisplay:Int = when (roll) {
             1 -> R.drawable.d20_1
             2 -> R.drawable.d20_2

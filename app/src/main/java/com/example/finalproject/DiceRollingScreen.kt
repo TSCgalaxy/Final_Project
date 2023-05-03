@@ -46,10 +46,10 @@ fun DiceRollingScreen(
     val context = LocalContext.current
 
     // These may be better as an array!!
-    val d4:DiceObject = DiceObject(Die.d4(),-1, R.drawable.dice_1) // This creates a four-sided die with face values ranging from 1 to 4
+    val d4:DiceObject = DiceObject(Die.d4(),-1, R.drawable.d4_1) // This creates a four-sided die with face values ranging from 1 to 4
     val d6:DiceObject = DiceObject(Die.d6(),-1, R.drawable.d6_0) // This creates a six-sided die with face values ranging from 1 to 6
     val d8:DiceObject = DiceObject(Die.d8(),-1, R.drawable.d8_1) // This creates an eight-sided die with face values ranging from 1 to 8
-    val d10:DiceObject = DiceObject(Die.d10(),-1, R.drawable.dice_1) // This creates a ten-sided die with face values ranging from 1 to 10
+    val d10:DiceObject = DiceObject(Die.d10(),-1, R.drawable.d10_1) // This creates a ten-sided die with face values ranging from 1 to 10
     val d12:DiceObject = DiceObject(Die.d12(), -1, R.drawable.dice_1) // This creates a twelve-sided die with face values ranging from 1 to 12
     val d20:DiceObject = DiceObject(Die.d20(),-1, R.drawable.d20_0) // This creates a twenty-sided die with face values ranging from 1 to 20
 
@@ -138,6 +138,14 @@ fun DiceCard(obj: DiceObject, modifier:Modifier = Modifier,
 
 }
 
+/**
+ * middleDice is a function that creates and shows the dice within the middle grid to be rolled and
+ * images to be changed.
+ *
+ * @param List<DiceObject> rollers is the list of dice that are being chosen by the user
+ * @param onDiceChanged (DiceObject,Boolean) -> Unit is the function sent to the method to add or
+ *  remove dice from the grid.
+ */
 @Composable
 fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -> Unit){
     LazyVerticalGrid(
@@ -160,6 +168,12 @@ fun middleDice(rollers: List<DiceObject>, onDiceChanged: (DiceObject, Boolean) -
     }
 }
 
+/**
+ * PopupWindowDialog is a method to create a popup window that appears at the bottom of the screen and shows
+ * the user what the total outcome is of the dice that they rolled per group of dice Ex.(4 sided, 6 sided...)
+ *
+ * @param List<DiceObject> rollers is the list of dice that were rolled last.
+ */
 @Composable
 fun PopupWindowDialog(rollers: List<DiceObject>) {
     var d4Total = 0
@@ -201,7 +215,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
     ) {
         Box(
                 Modifier
-                        .size(300.dp, (40 * rollers.size).dp)
+                        .size(300.dp, 300.dp)
                         .padding(top = 5.dp)
                         .background(color = MaterialTheme.colors.primaryVariant, RoundedCornerShape(10.dp))
                         .border(1.dp, color = Color.Black, RoundedCornerShape(10.dp))
@@ -212,7 +226,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 4 Sided Total: " + d4Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                             modifier = Modifier.padding(start = 15.dp)
                     )
                 }
@@ -221,7 +235,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 6 Sided Total: " + d6Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                             modifier = Modifier.padding(start = 15.dp)
                     )
                 }
@@ -230,7 +244,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 8 Sided Total: " + d8Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                             modifier = Modifier.padding(start = 15.dp)
                     )
                 }
@@ -239,7 +253,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 10 Sided Total: " + d10Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                         modifier = Modifier.padding(start = 15.dp)
                     )
                 }
@@ -248,7 +262,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 12 Sided Total: " + d12Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                         modifier = Modifier.padding(start = 15.dp)
                     )
                 }
@@ -257,7 +271,7 @@ fun PopupWindowDialog(rollers: List<DiceObject>) {
                     Text(
                             text = " 20 Sided Total: " + d20Total.toString(),
                             style = MaterialTheme.typography.h1,
-                            fontSize = 20.sp,
+                            fontSize = 30.sp,
                         modifier = Modifier.padding(start = 15.dp)
                     )
                 }

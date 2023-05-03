@@ -6,10 +6,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.navigation.NavController
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.example.finalproject.R
 import com.example.finalproject.DnDScreen
+import org.junit.Assert
 
 import org.junit.Before
 import org.junit.Rule
@@ -34,6 +36,17 @@ class DiceScreenTest {
         }
     }
 
+    @Test
+    fun dndNavHost_verifyStartDestination() {
+        navController.assertCurrentRouteName(DnDScreen.HomeScreen.name)
+    }
+
+    @Test
+    fun dndNavHost_verifyNavigationToDice() {
+        navigateToDiceScreen()
+        navController.assertCurrentRouteName(DnDScreen.DiceRoller.name)
+
+    }
     @Test
     fun dndDiceScreen_4SidedSelected() {
         navigateToDiceScreen()
@@ -75,4 +88,7 @@ class DiceScreenTest {
         composeTestRule.onNodeWithTag("dice").performClick()
     }
 
+    private fun NavController.assertCurrentRouteName(expectedRouteName: String) {
+        Assert.assertEquals(expectedRouteName, currentBackStackEntry?.destination?.route)
+    }
 }
