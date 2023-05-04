@@ -3,6 +3,7 @@ package com.example.finalproject
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -17,6 +18,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.finalproject.data.*
@@ -25,6 +27,12 @@ class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs){
 
 }
 
+/**
+ * makes a list from the database
+ * @param onCharacterButtonCLick event that happens on clicking of profiles
+ * @param modifier just modifiers
+ * @param viewmodel database viewmodel
+ */
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun mainCharacterListScreen(
@@ -38,21 +46,14 @@ fun mainCharacterListScreen(
         bottomBar  = {}
     )
     {
-        LazyColumn(modifier = Modifier.background(MaterialTheme.colors.background)) {
+        LazyColumn(modifier = Modifier
+            .background(MaterialTheme.colors.background)) {
             for (x in NPCs.subs) {
                 item {
+
                     var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
-                    Button(onClick = { onCharacterButtonClicked(x.id) },) {
+                    Button(modifier = Modifier.testTag(x.id.toString()) ,onClick = { onCharacterButtonClicked(x.id) },) {
                         CharacterItem(info = info)
-                    }
-                }
-            }
-            items(characterList) {
-                var test by rememberSaveable { mutableStateOf(false)}
-                Button(onClick = { test = true },){
-                    "test"
-                    if(test){
-                        test2()
                     }
                 }
             }
@@ -63,7 +64,7 @@ fun mainCharacterListScreen(
 /**
  * Composable that displays a list item containing a dog icon and their information.
  *
- * @param dog contains the data that populates the list item
+ * @param info contains the data that populates the list item
  * @param modifier modifiers to set to this composable
  */
 @Composable
@@ -85,6 +86,11 @@ fun CharacterItem(info: CharacterInfo, modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * creates the info card
+ * @param dogIcon charcter picture
+ * @param modifier makes modifiers
+ */
 @Composable
 fun CharacterInfo(@DrawableRes dogIcon: Int, modifier: Modifier = Modifier) {
     Image(
@@ -102,6 +108,13 @@ fun CharacterInfo(@DrawableRes dogIcon: Int, modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * makes the text for cards
+ * @param dogName character name
+ * @param health current health
+ * @param maxHealth max health
+ * @param modifier just modifers
+ */
 @Composable
 fun CharacterInformation(dogName: String, health: Int, maxHealth: Int, modifier: Modifier = Modifier) {
     Column {

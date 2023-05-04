@@ -1,5 +1,6 @@
 package com.example.finalproject.data
 
+import androidx.annotation.StringRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -53,7 +54,7 @@ class CharacterEntity (
 
     // image id
     @ColumnInfo(name = "image")
-    val image: Int,
+    val image:  Int,
 
     @ColumnInfo(name = "race")
     val race: String,

@@ -22,10 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -72,7 +69,7 @@ fun CharacterDropdown (items: List<Pair<String, Int>>,
         colors = colors,
         enabled = false,
         value = currentSelectedText,
-        onValueChange = {/* currentSelectedText = it */ },
+        onValueChange = { currentSelectedText = it },
         placeholder = { Text(text = stringResource(id = placeholder)) },
         label = { Text(text = stringResource(id = label), color = Color.White)
         },
@@ -105,7 +102,7 @@ fun CharacterDropdown (items: List<Pair<String, Int>>,
         items.forEach {
             DropdownMenuItem(onClick = {
                 currentSelectedText = it.first
-                modifyStateCallback(label)
+                modifyStateCallback(it.first)
                 isExpanded = false }
             ) {
                 //label
@@ -137,14 +134,18 @@ fun ImageSelector (items: List<Pair<String, Int>>,
     val colors: TextFieldColors = TextFieldColorOverride()
 
     //Create Text Field
-    Image(painter = painterResource(viewModel.getImage()),
+    Image(
+        painter = painterResource(viewModel.getImage()),
         contentDescription = null,
-        modifier = Modifier.height(64.dp)
-            .clip(CircleShape).fillMaxWidth()
+        modifier = Modifier
+            .height(64.dp)
+            .clip(CircleShape)
+            .fillMaxWidth()
             .onGloballyPositioned { coords ->
                 textFieldSize = coords.size.toSize()
             }
-            .clickable { isExpanded = !isExpanded },
+            .clickable { isExpanded = !isExpanded }
+            .testTag(stringResource(id = label)),
     )
 
     //The dropdown menu itself
@@ -185,7 +186,7 @@ fun ImageSelector (items: List<Pair<String, Int>>,
 fun CharacterTextField(
     @StringRes placeholder: Int,
     @StringRes label: Int,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.testTag(stringResource(label)),
     isAttr: Boolean = false,
     attrConstraint: Int = 20,
     modifyStateCallback: (Any) -> Unit = {}) {
@@ -353,7 +354,8 @@ fun CharacterScreen(
                 label = R.string.label_max_hp,
                 modifyStateCallback = { viewModel.setMaxHP(it as Int)},
                 isAttr = true,
-                attrConstraint = 50
+                attrConstraint = 50,
+                modifier = modifier.testTag("maxHP")
             )
 
             //Class and race
@@ -441,7 +443,7 @@ fun CharacterLvlXP(setLvl: (Int) -> Unit,
             label = R.string.label_level,
             modifier = Modifier
                 .padding(8.dp)
-                .fillMaxWidth(.5f),
+                .fillMaxWidth(.5f).testTag("level"),
             isAttr = true,
             attrConstraint = 20,
             modifyStateCallback = { setLvl(it as Int) }
@@ -449,7 +451,7 @@ fun CharacterLvlXP(setLvl: (Int) -> Unit,
         CharacterTextField(
             placeholder = R.string.placeholder_select_xp,
             label = R.string.label_XP,
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(8.dp).testTag("xp"),
             isAttr = true,
             attrConstraint = 999999,
             modifyStateCallback = { setXP(it as Int) }
