@@ -36,7 +36,6 @@ fun CharacterProfileScreen(
     navController: NavController,
 ) {
     val characterState = characterViewModel.state.collectAsState()
-    Log.d("charState", "${characterState.value.character}")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),

@@ -22,10 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import com.example.finalproject.data.*
-import kotlinx.coroutines.launch
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
-import kotlinx.coroutines.flow.firstOrNull
 
 /**
  * Enum class that will hold all the screens in the app.
