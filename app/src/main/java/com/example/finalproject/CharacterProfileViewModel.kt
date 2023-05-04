@@ -5,61 +5,54 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.finalproject.data.*
+import com.example.finalproject.data.CharacterEntity
+import com.example.finalproject.data.CharacterState
+import com.example.finalproject.data.InventoryEntity
+import com.example.finalproject.data.ItemEntity
+import com.example.finalproject.data.RepositoryClass
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for the Character Profile
+ * ViewModel for the CharacterProfileScreen
  * @param repo the repository to get the data from
- * @param id the id of the character
+ * @param id the id of the character to get
  */
 class CharacterProfileViewModel (
     private val repo : RepositoryClass,
     id: Int
 ) : ViewModel(){
 
-    var state by mutableStateOf(CharacterState())
+    var state = MutableStateFlow(CharacterState())
         private set
 
+    private var characterId = id
     var isDialogOpen by mutableStateOf(false)
-    var isItemDialogueOpen by mutableStateOf(false)
+
 
     init {
-        getCharacterById(id)
-        getInventory(id)
-        //getItems()
+        getCharacterById(characterId)
+        getInventory(characterId)
     }
 
-    /**
-     * Get all the characters from the DB
-     */
-    fun getCharacter(){
-        viewModelScope.launch {
-            repo.getAllCharacters().collectLatest {
-                state = state.copy(
-                    characters = it
-                )
-            }
-        }
-    }
 
     /**
-     * Get a character by id
-     * @param id the id of the character
+     * Function to get all the characters from the DB
+     * @param id the id of the character to get
      */
     fun getCharacterById(id: Int){
         viewModelScope.launch {
-            repo.getCharacter(id)?.collectLatest {
-                state = state.copy(
-                    character = it
-                )
+            repo.getCharacter(id)?.collectLatest {char ->
+                state.update{it.copy(character = char)}
             }
         }
     }
 
+
     /**
-     * Delete a character from the DB
+     * Function to delete a character from the DB
      * @param character the character to delete
      */
     fun deleteCharacter(character: CharacterEntity){
@@ -70,58 +63,27 @@ class CharacterProfileViewModel (
 
 
     /**
-     * get all items specific to a character
-     * @param charid the id of the character
+     * Function to get all the items from the DB
+     * @param charid the id of the character to get the items for
      */
     fun getInventory(charid: Int){
         viewModelScope.launch {
-            repo.getInventory(charid).collectLatest {
-                state = state.copy(
-                    items = it
-                )
+            repo.getInventory(charid).collectLatest { ite ->
+                state.update{it.copy(items = ite)}
             }
         }
     }
 
 
     /**
-     * Add Inventory to the DB
-     * @param inventory the inventory to add
-     */
-    fun addInventory(inventory: InventoryEntity) = viewModelScope.launch {
-        repo.insertInventory(inventory)
-    }
-
-    /**
-     * Add an item to the DB
+     * Function to add an item to the DB
      * @param item the item to add
      */
-    fun addItem(item: ItemEntity) = viewModelScope.launch {
-        repo.insertItem(item)
-        addInventory(InventoryEntity(state.character!!.id, item.id))
-
-    }
-
-    /**
-     * Delete an item from the DB
-     * @param item the item to delete
-     */
     fun deleteItem(item: ItemEntity) = viewModelScope.launch {
-        repo.removeItem(item)
+        //repo.removeItem(item)
+        repo.removeInventory(InventoryEntity(characterId, item.id))
     }
 
-    /**
-     * Get all items from the DB
-     */
-    fun getItems(){
-        viewModelScope.launch {
-            repo.getAllItem().collectLatest {
-                state = state.copy(
-                    items = it
-                )
-            }
-        }
-    }
 
     /**
      * Function to open the dialog
@@ -138,29 +100,15 @@ class CharacterProfileViewModel (
     }
 
     /**
-     * Function to open the Add Item dialog
-     */
-    fun openItemDialog() {
-        isItemDialogueOpen = true
-    }
-
-    /**
-     * Function to close the Add Item dialog
-     */
-    fun closeItemDialog() {
-        isItemDialogueOpen = false
-    }
-
-    /**
-     * Update a character in the DB
-     * @param character the character to update
+     * Function to update a character to the DB
+     * @param character the characetr to update
      */
     fun updateCharacter(character: CharacterEntity) = viewModelScope.launch {
         repo.updateNPC(character)
     }
 
     /**
-     * Add 1 to the current HP of a character
+     * Function to add 1 to the current HP of a character
      * @param it the character to heal
      */
     fun healCharacter(it: CharacterEntity) {
@@ -169,7 +117,7 @@ class CharacterProfileViewModel (
     }
 
     /**
-     * Subtract 1 from the current HP of a character
+     * Function to subtract 1 from the current HP of a character
      * @param it the character to damage
      */
     fun damageCharacter(it: CharacterEntity) {

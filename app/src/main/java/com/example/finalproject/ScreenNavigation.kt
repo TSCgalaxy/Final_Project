@@ -1,18 +1,17 @@
 package com.example.finalproject
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Button
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,19 +22,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavType
 import com.example.finalproject.data.*
-import kotlinx.coroutines.launch
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 
-
+/**
+ * Enum class that will hold all the screens in the app.
+ */
 enum class DnDScreen(@StringRes val title: Int, val route: String) {
     HomeScreen(title = R.string.main_screen, route = "home"),
     CharacterScreen(title = R.string.character_creator, route = "character"),
     DiceRoller(title = R.string.dice_roller, route = "dice"),
-    ProfileScreen(title = R.string.profile_screen, route = "profile/{id}")
+    ProfileScreen(title = R.string.profile_screen, route = "profile/{id}"),
+    ItemScreen(title = R.string.item_screen, route = "item/{id}"),
 }
 
-
+/**
+ * Composable that will add the app bar to the app.
+ * @param navController: NavController that will handle the navigation
+ * @param startDestination: The start destination of the app
+ * @param modifier: Modifier to apply to the composable
+ */
 @Composable
 fun DndAppBar(
     currentScreen: DnDScreen,
@@ -51,16 +57,14 @@ fun DndAppBar(
             }) {
                 Image(
                     painter = painterResource(R.drawable.addcharacter),
-                    contentDescription = null,
-                    modifier = Modifier.testTag("add_character")
+                    contentDescription = null
                 )
             }
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
             Spacer(modifier = modifier.padding(horizontal = 40.dp))
             IconButton(onClick = {
                 navController.navigate(DnDScreen.DiceRoller.route)
-            },
-            modifier = Modifier.testTag("dice")) {
+            }) {
                 Image(
                     painter = painterResource(R.drawable.dice),
                     contentDescription = null
@@ -82,12 +86,6 @@ fun DndApp(
     viewModel: DiceViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-
-    /*val backStackEntry by navController.currentBackStackEntryAsState()
-    //Get the current screen for the user
-    val currentScreen = DnDScreen.valueOf(
-        backStackEntry?.destination?.route ?: DnDScreen.HomeScreen.route
-    )*/
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = remember(navBackStackEntry) {
         DnDScreen.values().firstOrNull { screen ->
@@ -116,28 +114,32 @@ fun DndApp(
             startDestination = DnDScreen.HomeScreen.route,
             modifier = modifier.padding(innerPadding)
         ) {
-            /*composable(route = DnDScreen.HomeScreen.name) {
-                mainCharacterListScreen(onCharacterButtonClicked = {}, viewmodel =  CharacterViewModel(repository))
-            }*/
-
             composable(route = DnDScreen.HomeScreen.route) {
                 mainCharacterListScreen(onCharacterButtonClicked = { id ->
                     navController.navigate(route = "profile/$id")
-                }, viewmodel =  CharacterViewModel(repository))
+                    Log.d("CharListScreenNav", "id: $id")
+                }, viewmodel = CharacterViewModel(repository))
             }
             composable(
                 route = DnDScreen.ProfileScreen.route,
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: 0
+                Log.d("CharProfScreenNav", "id: $id")
                 CharacterProfileScreen(
                     characterViewModel = CharacterProfileViewModel(repository, id),
                     navController = navController
                 )
             }
-
-
-
+            composable(
+                route = DnDScreen.ItemScreen.route,
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getInt("id") ?: 0
+                ItemsMenu(
+                    viewModel = ItemMenuViewModel(repository, id),
+                )
+            }
             composable(route = DnDScreen.CharacterScreen.route) {
                 CharacterScreen(title = "Create a Character", repo = repository, onGoBack = {
                     navController.navigate(DnDScreen.HomeScreen.route)

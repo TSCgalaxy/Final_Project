@@ -14,7 +14,7 @@ class RepositoryClass ( val conversionDao: CharacterDao
             = conversionDao.addToInventory(conversion)
     override fun getAllItem(): Flow<List<ItemEntity>>
             = conversionDao.getAllItem()
-    override fun getAllInventory(conversion: CharacterEntity)
+    override suspend fun getAllInventory(conversion: CharacterEntity)
             = conversionDao.getAllFromInventory()
     override suspend fun removeCharacter(player: CharacterEntity)
             = conversionDao.removeCharacter(player)
@@ -34,6 +34,12 @@ class RepositoryClass ( val conversionDao: CharacterDao
 
     suspend fun addInventory(inventoryEntity: InventoryEntity)
             = conversionDao.addInventory(inventoryEntity)
+
+    override fun  retrieveCharacter(id: Int): CharacterEntity?
+            = conversionDao.getCharacter(id)
+
+     override fun retrieveInventory(id: Int): Flow<List<InventoryEntity>> =
+        conversionDao.getInventoryById(id)
     //
     companion object {
         private var repository: KotlinRepositoryInterface? = null

@@ -14,10 +14,14 @@ interface KotlinRepositoryInterface {
     suspend fun removeCharacter(player: CharacterEntity)
     suspend fun removeItem(itemEntity: ItemEntity)
     suspend fun removeInventory(inventoryEntity: InventoryEntity)
-    fun getAllInventory(conversion: CharacterEntity):  Flow<List<InventoryEntity>>
+    suspend fun getAllInventory(conversion: CharacterEntity):  Flow<List<InventoryEntity>>
 
     suspend fun updateNPC(player: CharacterEntity)
     suspend fun updateInvetory(inventoryEntity: InventoryEntity)
     fun getCharacter(userId: Int): Flow<CharacterEntity>?
+
+    fun retrieveCharacter(id: Int): CharacterEntity?
+
+    fun retrieveInventory(id: Int): Flow<List<InventoryEntity>>
 }
 //

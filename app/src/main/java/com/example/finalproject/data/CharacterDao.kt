@@ -30,9 +30,9 @@ interface CharacterDao {
     @Query("SELECT * FROM tableplayer WHERE id = :userId LIMIT 1")
     fun NPCbyID(userId: Int): Flow<CharacterEntity>?
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    fun updateNPC(player: CharacterEntity)
+    suspend fun updateNPC(player: CharacterEntity)
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    fun updateInventory(inventoryEntity: InventoryEntity)
+    suspend fun updateInventory(inventoryEntity: InventoryEntity)
 
     @Query("SELECT * FROM item")
     fun getAllItem(): Flow<List<ItemEntity>>
@@ -47,4 +47,10 @@ interface CharacterDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addInventory(inventoryEntity: InventoryEntity)
+
+    @Query("SELECT * FROM tableplayer WHERE id = :id")
+    fun getCharacter(id: Int): CharacterEntity?
+
+    @Query("SELECT * FROM inventory WHERE characterID = :id")
+    fun getInventoryById(id: Int): Flow<List<InventoryEntity>>
 }
