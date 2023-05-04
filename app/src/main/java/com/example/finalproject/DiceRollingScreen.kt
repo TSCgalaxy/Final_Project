@@ -95,7 +95,8 @@ fun DiceRollingScreen(
                 if (!ShowPopup) {
                     onRollDice()
                 };ShowPopup = !ShowPopup;counter += 1
-            }
+            },
+            modifier = Modifier.testTag("Roll")
         )
         {
             if (!ShowPopup) {

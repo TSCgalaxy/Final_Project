@@ -83,6 +83,14 @@ class DiceScreenTest {
         composeTestRule.onNodeWithTag("20").performClick()
     }
 
+    @Test
+    fun dndDiceScreen_RolledCorrectly() {
+        navigateToDiceScreen()
+        composeTestRule.onNodeWithTag("6").performClick()
+        composeTestRule.onNodeWithTag("Roll").performClick()
+
+
+    }
 
     private fun navigateToDiceScreen() {
         composeTestRule.onNodeWithTag("dice").performClick()
