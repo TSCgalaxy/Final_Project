@@ -51,7 +51,7 @@ fun mainCharacterListScreen(
             for (x in NPCs.subs) {
                 item {
 
-                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = R.drawable.dice, id = x.id)
+                    var info = CharacterInfo(name = x.name, maxHealth = x.maxHP, health = x.currentHP, imageResourceId = x.image.toInt(), id = x.id)
                     Button(modifier = Modifier.testTag(x.id.toString()) ,onClick = { onCharacterButtonClicked(x.id) },) {
                         CharacterItem(info = info)
                     }
