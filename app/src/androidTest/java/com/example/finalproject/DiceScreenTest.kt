@@ -38,13 +38,13 @@ class DiceScreenTest {
 
     @Test
     fun dndNavHost_verifyStartDestination() {
-        navController.assertCurrentRouteName(DnDScreen.HomeScreen.name)
+        navController.assertCurrentRouteName(DnDScreen.HomeScreen.route)
     }
 
     @Test
     fun dndNavHost_verifyNavigationToDice() {
         navigateToDiceScreen()
-        navController.assertCurrentRouteName(DnDScreen.DiceRoller.name)
+        navController.assertCurrentRouteName(DnDScreen.DiceRoller.route)
 
     }
     @Test

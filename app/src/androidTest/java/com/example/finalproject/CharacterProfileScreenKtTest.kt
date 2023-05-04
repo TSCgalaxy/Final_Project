@@ -60,7 +60,7 @@ class CharacterProfileScreenKtTest {
         val repo = RepositoryClass(dao)
 
         val character = CharacterEntity(
-            2, "Bob", 1, 2, 2, 2, 3, 5, 7, 6, 8, 4, "Halfling", "Celeric"
+            2, "Bob", 1, 2, 2, 2, 3, 5, 7, 6, 8, 4, R.drawable.d4_1, "Celeric", "Halfling"
         )
 
         GlobalScope.launch {
