@@ -424,7 +424,7 @@ fun createPDF(viewModel: CharacterProfileViewModel) {
     )
     title.textSize = 15F
 
-    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
+    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.black))
     //var image = bitmapFactory
     canva.drawText("${viewModel.state.character?.race}, ${viewModel.state.character?.charClass}", 50F, 100F, title)
     canva.drawText("${viewModel.state.character?.name}", 50F, 80F, title)
@@ -432,7 +432,7 @@ fun createPDF(viewModel: CharacterProfileViewModel) {
     canva.drawText("HP: ${viewModel.state.character?.currentHP}/ ${viewModel.state.character?.maxHP}", 200F, 120F, title)
 
     title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL))
-    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
+    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.black))
     title.textSize = 15F
     canva.drawText("Strength: ${viewModel.state.character?.attStr} \t Dexterity: ${viewModel.state.character?.attDex}", 50F, 150F, title)
     canva.drawText("Constitution: ${viewModel.state.character?.attCon} \t Intelligence: ${viewModel.state.character?.attInt}", 50F, 165F, title)
