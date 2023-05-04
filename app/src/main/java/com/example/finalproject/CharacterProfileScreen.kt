@@ -426,7 +426,7 @@ fun createPDF(viewModel: CharacterProfileViewModel) {
 
     title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
     //var image = bitmapFactory
-    canva.drawText("${stringResource((viewModel.state.character?.race)!!.toInt())}, ${stringResource((viewModel.state.character?.charClass)!!.toInt())}", 50F, 100F, title)
+    canva.drawText("${viewModel.state.character?.race}, ${viewModel.state.character?.charClass}", 50F, 100F, title)
     canva.drawText("${viewModel.state.character?.name}", 50F, 80F, title)
     canva.drawText("Level: ${viewModel.state.character?.level}, XP: ${viewModel.state.character?.XP}", 50F, 120F, title)
     canva.drawText("HP: ${viewModel.state.character?.currentHP}/ ${viewModel.state.character?.maxHP}", 200F, 120F, title)
