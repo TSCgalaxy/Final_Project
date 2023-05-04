@@ -47,15 +47,6 @@ fun mainCharacterListScreen(
                     }
                 }
             }
-            items(characterList) {
-                var test by rememberSaveable { mutableStateOf(false)}
-                Button(onClick = { test = true },){
-                    "test"
-                    if(test){
-                        test2()
-                    }
-                }
-            }
         }
     }
 }
