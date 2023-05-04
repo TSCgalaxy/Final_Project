@@ -2,41 +2,36 @@ package com.example.finalproject
 
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.testing.TestNavHostController
 import androidx.room.Room
-import com.example.finalproject.data.CharacterDB
-import com.example.finalproject.data.CharacterDao
-import com.example.finalproject.data.CharacterEntity
-import com.example.finalproject.data.RepositoryClass
-import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.example.finalproject.data.*
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.*
 
 
+/**
+ * Test for the ItemsMenuScreen
+ */
 class CharacterProfileScreenKtTest {
 
     @get:Rule
     val composeTestRule = createAndroidComposeRule<ComponentActivity>()
 
-
     private lateinit var navController: TestNavHostController
-
     private lateinit var dao: CharacterDao
     private lateinit var db: CharacterDB
 
 
+    /**
+     * Set up the database
+     */
     @Before
     fun setUp() {
         navController = TestNavHostController(composeTestRule.activity)
@@ -47,13 +42,19 @@ class CharacterProfileScreenKtTest {
         dao = db.characterDAO()
     }
 
+    /**
+     * Close the database
+     */
     @After
     fun tearDown() {
         db.close()
     }
 
 
-
+    /**
+     * Test the CharacterProfileScreen
+     */
+    @OptIn(DelicateCoroutinesApi::class)
     @Test
     fun characterProfileScreen_verifyContent() {
         val repo = RepositoryClass(dao)
@@ -65,7 +66,6 @@ class CharacterProfileScreenKtTest {
         GlobalScope.launch {
             dao.addCharacter(character)
         }
-        val retrieveChar = dao.getCharacter(2)
 
         val characterViewModel = CharacterProfileViewModel(repo, 2)
         composeTestRule.setContent {
@@ -74,8 +74,7 @@ class CharacterProfileScreenKtTest {
                 characterViewModel = characterViewModel
             )
         }
-        val state = characterViewModel.state.value.character
-        //assertEquals(retrieveChar,state)
+
         composeTestRule.onNodeWithText("Level: 1").assertExists()
         composeTestRule.onNodeWithText("Bob").assertExists()
         composeTestRule.onNodeWithText("Race: Halfling").assertExists()
@@ -86,5 +85,28 @@ class CharacterProfileScreenKtTest {
         composeTestRule.onNodeWithText("Int: 6").assertExists()
         composeTestRule.onNodeWithText("Wisdom: 7").assertExists()
         composeTestRule.onNodeWithText("Charisma: 8").assertExists()
+
+
+    }
+
+    /**
+     * Test the CharacterProfileScreen
+     */
+    @Test
+    fun inventoryDisplayTest() {
+        val repo = RepositoryClass(dao)
+        val viewModel = CharacterProfileViewModel(repo, 2)
+
+        composeTestRule.setContent {
+            InventoryDisplay(
+                navController = navController,
+                viewModel = viewModel
+            )
+        }
+
+        composeTestRule.onNodeWithText("Add").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription("Add").performClick()
+
+
     }
 }

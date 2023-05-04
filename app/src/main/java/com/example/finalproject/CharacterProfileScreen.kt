@@ -231,10 +231,10 @@ fun InventoryDisplay(
                 .fillMaxWidth()
                 .clickable { navController.navigate("item/$id") }
         ) {
-            IconButton(onClick = { navController.navigate("item/$id") }) {
+            IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = null,
+                    contentDescription = "Add",
                     modifier = modifier.size(30.dp),
                     tint = Color.Green
                 )
