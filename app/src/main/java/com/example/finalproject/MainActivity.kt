@@ -366,53 +366,7 @@ fun test() {
 }
 
 
-@Composable
-fun test2() {
-    var document = PdfDocument()
-    var  file = File(Environment.getExternalStorageDirectory(), "Charcter.pdf")
 
-    // create a page description
-    var width : Int = (8 * 72) as Int
-    var length : Int = (11 * 72) as Int
-    var pageInfo = PageInfo.Builder(width, length, 1).create()
-
-    // start a page
-    var page = document.startPage(pageInfo)
-
-    // draw something on the page
-    var content = MainActivity.ProfileCardView(context = LocalContext.current)
-//    content.Content()
-    var canva = page.canvas
-    var title: Paint = Paint()
-    title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
-
-    title.textSize = 15F
-
-    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
-
-    canva.drawText("A portal for IT professionals.", 209F, 100F, title)
-    canva.drawText("Geeks for Geeks", 209F, 80F, title)
-    title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL))
-    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
-    title.textSize = 15F
-
-    // below line is used for setting
-    // our text to center of PDF.
-    title.textAlign = Paint.Align.CENTER
-    canva.drawText("This is sample document which we have created.", 396F, 560F, title)
-
-    //content.draw(page.getCanvas())
-    // finish the page
-    document.finishPage(page)
-    // write the document content
-    //val out = OutputStreamWriter
-    //document.writeTo(getOutputStream())
-    // close the document
-    document.writeTo(FileOutputStream(file, false))
-    document.close()
-    Log.d("document.toString()", document.pages.toString())
-    Log.d("file", file.path)
-}
 
 @Preview(showBackground = true)
 @Composable

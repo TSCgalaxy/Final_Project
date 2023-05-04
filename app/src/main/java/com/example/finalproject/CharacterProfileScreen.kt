@@ -1,5 +1,15 @@
 package com.example.finalproject
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.pdf.PdfDocument
+import android.os.Environment
+import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.provider.DocumentsContract
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,20 +23,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.finalproject.data.ItemEntity
+import java.io.File
+import java.io.FileOutputStream
 
 
 /**
@@ -101,6 +117,29 @@ fun CharacterProfileScreen(
             )
         }
         Spacer(modifier = Modifier.weight(1f))
+        //PAYTON ADDED just incase I break it
+        var test by rememberSaveable { mutableStateOf(false)}
+        //var test = false
+        Button(
+            onClick = { test = true },
+            modifier = modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+        ){
+            if(test){
+                createPDF(characterViewModel)
+                test = false
+                Log.d("working", "working")
+                Log.d("working", "working")
+                Log.d("working", "working")
+                Log.d("working", "working")
+                Log.d("working", "working")
+            }
+            Text(text = "Create PDF", style = MaterialTheme.typography.h5)
+        }
+        //
         Button(
             onClick = {
                 characterState.character?.let { characterViewModel.deleteCharacter(character = it) }
@@ -352,6 +391,83 @@ fun InventoryDisplay(
 
 
     }
+}
+/**
+    creates a pdf
+    @param viewModel character viewmodel to export data to pdf
+ */
+@Composable
+fun createPDF(viewModel: CharacterProfileViewModel) {
+    var document = PdfDocument()
+    var  file = File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS), "Charcter.pdf")
+
+    // create a page description
+    var width : Int = (8 * 72) as Int
+    var length : Int = (11 * 72) as Int
+    var pageInfo = PdfDocument.PageInfo.Builder(width, length, 1).create()
+
+    // start a page
+    var page = document.startPage(pageInfo)
+
+    // draw something on the page
+    var canva = page.canvas
+    var title: Paint = Paint()
+    title.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL))
+    val bitmap = BitmapFactory.decodeResource(LocalContext.current.resources, ((viewModel.state.character?.image)!!.toInt()))//getDrawable(LocalContext.current.resources, , null)
+    val scale = 0.5f // Scale factor
+
+    val scaledBitmap = Bitmap.createScaledBitmap(
+        bitmap,
+        (bitmap.getWidth() * scale).toInt(),
+        (bitmap.getHeight() * scale).toInt(),
+        false
+    )
+    title.textSize = 15F
+
+    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
+    //var image = bitmapFactory
+    canva.drawText("${stringResource((viewModel.state.character?.race)!!.toInt())}, ${stringResource((viewModel.state.character?.charClass)!!.toInt())}", 50F, 100F, title)
+    canva.drawText("${viewModel.state.character?.name}", 50F, 80F, title)
+    canva.drawText("Level: ${viewModel.state.character?.level}, XP: ${viewModel.state.character?.XP}", 50F, 120F, title)
+    canva.drawText("HP: ${viewModel.state.character?.currentHP}/ ${viewModel.state.character?.maxHP}", 200F, 120F, title)
+
+    title.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL))
+    title.setColor(ContextCompat.getColor(LocalContext.current, R.color.purple_200))
+    title.textSize = 15F
+    canva.drawText("Strength: ${viewModel.state.character?.attStr} \t Dexterity: ${viewModel.state.character?.attDex}", 50F, 150F, title)
+    canva.drawText("Constitution: ${viewModel.state.character?.attCon} \t Intelligence: ${viewModel.state.character?.attInt}", 50F, 165F, title)
+    canva.drawText("Wisdom: ${viewModel.state.character?.attWis} \t Charisma: ${viewModel.state.character?.attChr}", 50F, 180F, title)
+    canva.drawBitmap(scaledBitmap, 300f, 100f, null)
+    //canva.drawText("Description: ${viewModel.state.character?.}", 50F, 180F, title)
+    canva.drawText("Inventory:", 50F, 200F, title)
+    var format = 215F
+    viewModel.state.items.forEach { item ->
+        canva.drawText("${item.name}, ${item.level}", 50F, format, title)
+        format += 15F
+    }
+
+
+    title.textAlign = Paint.Align.CENTER
+    document.finishPage(page)
+    document.writeTo(FileOutputStream(file, false))
+    document.close()
+    Log.d("file", file.toURI().toString())
+    Log.d("file", file.toURI().toString())
+    Log.d("file", file.toURI().toString())
+    Log.d("file", file.toURI().toString())
+    Log.d("file", file.toURI().toString())
+    Log.d("file", file.toURI().toString())
+    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+        //addCategory(Intent.CATEGORY_OPENABLE)
+        type = "application/pdf"
+
+        // Optionally, specify a URI for the file that should appear in the
+        // system file picker when it loads.
+        putExtra(DocumentsContract.EXTRA_INITIAL_URI, file.toURI())
+    }
+
+    LocalContext.current.startActivity(intent)
+    //startActivityForResult()
 }
 
 @Preview
