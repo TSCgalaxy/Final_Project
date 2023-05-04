@@ -71,7 +71,6 @@ class DiceScreenTest {
         composeTestRule.onNodeWithTag("10").performClick()
     }
 
-
     @Test
     fun dndDiceScreen_12SidedSelected() {
         navigateToDiceScreen()

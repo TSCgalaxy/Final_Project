@@ -77,7 +77,6 @@ fun DndAppBar(
 
 }
 
-
 /**
  * Composable that will control navigation of what screen the
  * user is currently on.
