@@ -40,8 +40,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
-
-
 /**
  * This is the character profile screen. It displays the character's name, level, and stats.
  * @param modifier Modifier to set to this composable
