@@ -16,8 +16,6 @@ data class DiceObject(
         Lastroll = result[0].value
 
         currentImage = getImage()
-        Log.d("Help Me",Lastroll.toString())
-        Log.d("Help Me",currentImage.toString())
     }
     fun getImage(): Int{
         val imageResource : Int = when(dice.faces.size) {
