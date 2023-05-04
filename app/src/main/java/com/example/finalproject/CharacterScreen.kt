@@ -102,7 +102,7 @@ fun CharacterDropdown (items: List<Pair<String, Int>>,
         items.forEach {
             DropdownMenuItem(onClick = {
                 currentSelectedText = it.first
-                modifyStateCallback(label)
+                modifyStateCallback(it.first)
                 isExpanded = false }
             ) {
                 //label
@@ -277,8 +277,8 @@ fun dataCheck(viewmodel: CreateCharViewModel): Boolean {
     if (viewmodel.getMaxHP() == 0) return false
 
     //Race and Class
-    if (viewmodel.getRace() == 0) return false
-    if (viewmodel.getClass() == 0) return false
+    if (viewmodel.getRace() == "") return false
+    if (viewmodel.getClass() == "") return false
 
     //Attributes
     if (viewmodel.getStr() == 0) return false
@@ -360,8 +360,8 @@ fun CharacterScreen(
 
             //Class and race
             CharacterRaceClass(
-                setClass = {viewModel.setClass(it.toInt())},
-                setRace = {viewModel.setRace(it.toInt())})
+                setClass = {viewModel.setClass(it)},
+                setRace = {viewModel.setRace(it)})
 
             //Level and XP
             CharacterLvlXP(

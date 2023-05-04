@@ -14,8 +14,8 @@ data class CharacterUIState(
     val maxHP: Int = 0,
     val curHP: Int = 0,
     val level: Int = 0,
-    val race: Int = 0,
-    val cClass: Int = 0,
+    val race: String = "",
+    val cClass: String = "",
     val attrStrength: Int = 0,
     val attrConstitution: Int = 0,
     val attrDexterity: Int = 0,
@@ -75,14 +75,14 @@ class CreateCharViewModel(context: Context): ViewModel() {
     /**
      * Gets the character's Race
      */
-    fun getRace(): Int {
+    fun getRace(): String {
         return _uiState.value.race
     }
 
     /**
      * Gets the character's Class
      */
-    fun getClass(): Int {
+    fun getClass(): String {
         return _uiState.value.cClass
     }
 
@@ -168,7 +168,7 @@ class CreateCharViewModel(context: Context): ViewModel() {
     /**
      * Sets the character's Class
      */
-    fun setClass(value: Int) {
+    fun setClass(value: String) {
         _uiState.update { currentState ->
             currentState.copy(cClass = value)
         }
@@ -177,7 +177,7 @@ class CreateCharViewModel(context: Context): ViewModel() {
     /**
      * Sets the character's name
      */
-    fun setRace(value: Int) {
+    fun setRace(value: String) {
         _uiState.update { currentState ->
             currentState.copy(race = value)
         }
